@@ -31,13 +31,12 @@ namespace WpfAppNotify.Notify
 
         double GetTopFrom()
         { 
-            double topFrom = System.Windows.SystemParameters.WorkArea.Bottom - 5;
-            bool isContinueFind = _boxes.Any(o => o._topFrom == topFrom);
-
-            while (isContinueFind)
+            double topFrom = System.Windows.SystemParameters.WorkArea.Bottom - 5; 
+            NotifyBox notifyBoxBottom = _boxes.FirstOrDefault(b => b._topFrom == topFrom);
+            while (notifyBoxBottom != null)
             {
-                topFrom = topFrom - 80;//此处80是NotifyWindow的高
-                isContinueFind = _boxes.Any(o => o._topFrom == topFrom);
+                topFrom = topFrom - notifyBoxBottom.ActualHeight;
+                notifyBoxBottom = _boxes.FirstOrDefault(b => b._topFrom == topFrom);
             }
 
             if (topFrom <= 0)

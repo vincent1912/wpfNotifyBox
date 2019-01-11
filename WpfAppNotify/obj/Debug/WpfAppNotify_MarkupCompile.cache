@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\
+E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\
 WpfAppNotify
 none
 false
 DEBUG;TRACE
-C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\App.xaml
+E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\App.xaml
 21323781300
 
-6598217976
+101638125786
 13-1454942768
 MainWindow.xaml;Notify\NotifyBox.xaml;
 
-False
+True
 
