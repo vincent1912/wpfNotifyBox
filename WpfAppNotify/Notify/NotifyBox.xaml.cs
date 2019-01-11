@@ -21,6 +21,7 @@ namespace WpfAppNotify.Notify
 
         static List<NotifyBox> _boxes = new List<NotifyBox>();
 
+
         double GetTopFrom()
         { 
             double topFrom = System.Windows.SystemParameters.WorkArea.Bottom - 5; 
