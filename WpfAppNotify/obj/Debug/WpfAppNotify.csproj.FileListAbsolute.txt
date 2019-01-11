@@ -1,0 +1,17 @@
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\bin\Debug\WpfAppNotify.exe.config
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\bin\Debug\WpfAppNotify.exe
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\bin\Debug\WpfAppNotify.pdb
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\WpfAppNotify.csprojAssemblyReference.cache
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\MainWindow.g.cs
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\Notify\NotifyBox.g.cs
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\App.g.cs
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\WpfAppNotify_MarkupCompile.cache
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\WpfAppNotify_MarkupCompile.lref
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\MainWindow.baml
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\Notify\NotifyBox.baml
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\WpfAppNotify.g.resources
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\WpfAppNotify.Properties.Resources.resources
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\WpfAppNotify.csproj.GenerateResource.cache
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\WpfAppNotify.csproj.CoreCompileInputs.cache
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\WpfAppNotify.exe
+C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\WpfAppNotify.pdb
