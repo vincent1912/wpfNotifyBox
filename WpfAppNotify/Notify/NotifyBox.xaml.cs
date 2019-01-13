@@ -177,13 +177,58 @@ namespace WpfAppNotify.Notify
 
         public void Show(DependencyObject content, int screenIndex)
         {
-            NotifyBox bx = new NotifyBox();
-            bx.Content = content;
-            bx._topFrom = GetTopFrom(screenIndex);
-            _boxes.Add(bx);
-            bx.Loaded += (s, e) =>
+            Application.Current.Dispatcher.Invoke(() => 
             {
-                try
+                NotifyBox bx = new NotifyBox();
+                bx.Content = content;
+                bx._topFrom = GetTopFrom(screenIndex);
+                _boxes.Add(bx);
+                bx.Loaded += (s, e) =>
+                {
+                    try
+                    {
+                        NotifyBox self = s as NotifyBox;
+                        self.UpdateLayout();
+                        SystemSounds.Asterisk.Play();//播放提示声
+
+                        self.Top = self._topFrom - self.ActualHeight;
+                        self.Left = GetScrRight(screenIndex) - self.ActualWidth;
+                        StartIn(self);
+
+                        Task.Factory.StartNew((box) =>
+                        {
+                            NotifyBox notifyBox = box as NotifyBox;
+                            System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_boxLife));
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                StartOut(notifyBox);
+                            });
+                        }, self);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                };
+                bx.Show();
+            }); 
+        }
+
+        public void Show(string msg,int screenIndex)
+        {
+            Show(null, msg, screenIndex);
+        }
+
+        public void Show(string title,string msg,int screenIndex)
+        {
+            Application.Current.Dispatcher.Invoke(() => 
+            {
+                NotifyBox bx = new NotifyBox();
+                bx.Message = msg;
+                bx.Title = title;
+                bx._topFrom = GetTopFrom(screenIndex);
+                _boxes.Add(bx);
+                bx.Loaded += (s, e) =>
                 {
                     NotifyBox self = s as NotifyBox;
                     self.UpdateLayout();
@@ -202,48 +247,9 @@ namespace WpfAppNotify.Notify
                             StartOut(notifyBox);
                         });
                     }, self);
-                }
-                catch (Exception ex)
-                {
-                    
-                }
-            };
-            bx.Show();
-        }
-
-        public void Show(string msg,int screenIndex)
-        {
-            Show(null, msg, screenIndex);
-        }
-
-        public void Show(string title,string msg,int screenIndex)
-        {
-            NotifyBox bx = new NotifyBox();
-            bx.Message = msg;
-            bx.Title = title;
-            bx._topFrom = GetTopFrom(screenIndex);
-            _boxes.Add(bx);
-            bx.Loaded += (s, e) =>
-            {
-                NotifyBox self = s as NotifyBox;
-                self.UpdateLayout();
-                SystemSounds.Asterisk.Play();//播放提示声
-
-                self.Top = self._topFrom - self.ActualHeight;
-                self.Left = GetScrRight(screenIndex) - self.ActualWidth;
-                StartIn(self);
-
-                Task.Factory.StartNew((box) =>
-                {
-                    NotifyBox notifyBox = box as NotifyBox;
-                    System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_boxLife));
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        StartOut(notifyBox);
-                    });
-                }, self);
-            };
-            bx.Show();
+                };
+                bx.Show();
+            }); 
         }
 
         public void ShowOnCurrentScr(string msg)
