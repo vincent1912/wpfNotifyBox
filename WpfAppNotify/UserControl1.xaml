@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="WpfAppNotify.UserControl1"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfAppNotify"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Height="160" Width="400" >
+    <Border BorderBrush="Silver" BorderThickness="1" Background="Black" Margin="0,2" CornerRadius="3">
+        <Image Source="aa.jpg" Stretch="Uniform"/>
+    </Border>
+</UserControl>

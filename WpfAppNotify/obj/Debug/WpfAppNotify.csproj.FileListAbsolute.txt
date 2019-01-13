@@ -32,3 +32,5 @@ E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\WpfAppNotify.csproj.G
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\WpfAppNotify.csproj.CoreCompileInputs.cache
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\WpfAppNotify.exe
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\WpfAppNotify.pdb
+E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\UserControl1.g.cs
+E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\UserControl1.baml

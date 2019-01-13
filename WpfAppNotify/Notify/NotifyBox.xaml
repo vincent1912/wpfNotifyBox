@@ -4,15 +4,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfAppNotify.Notify"
-        mc:Ignorable="d" AllowsTransparency="True" ShowInTaskbar="False" ShowActivated="False" Topmost="True"
-        Title="NotifyBox" Height="80" Width="360" WindowStyle="None" Background="Transparent" ResizeMode="NoResize"
-        RenderTransformOrigin="0.5,0.5" WindowStartupLocation="Manual"> 
+        mc:Ignorable="d" d:DesignHeight="80" d:DesignWidth="360" AllowsTransparency="True" ShowActivated="False" ShowInTaskbar="False"
+        Topmost="True" WindowStyle="None" ResizeMode="NoResize" MinWidth="360" MinHeight="80" MaxHeight="200" MaxWidth="400" RenderTransformOrigin="0.5,0.5"
+        Background="Transparent" SizeToContent="WidthAndHeight"
+        WindowStartupLocation="Manual"> 
     <Window.RenderTransform>
         <TransformGroup>
             <ScaleTransform/>
         </TransformGroup>
-    </Window.RenderTransform>
-    <Border BorderBrush="Silver" BorderThickness="1" CornerRadius="3" Background="Black" Margin="0,2">
-        
+    </Window.RenderTransform> 
+    
+    <Border BorderBrush="Silver" BorderThickness="1" CornerRadius="0" Background="Black" Margin="0,2">
+        <Grid Margin="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock HorizontalAlignment="Left" Text="{Binding Title,RelativeSource={RelativeSource AncestorType=Window}}" FontSize="14" Foreground="White"/>
+            <TextBlock Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Message}" FontSize="14" Foreground="White"/> 
+        </Grid>
     </Border>
 </Window>
