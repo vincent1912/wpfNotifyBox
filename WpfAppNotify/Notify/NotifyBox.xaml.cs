@@ -165,6 +165,11 @@ namespace WpfAppNotify.Notify
             Show(msg, -1);
         }
 
+        public void Show(string title,string msg)
+        {
+            Show(title, msg, -1);
+        }
+
         public void Show(DependencyObject content)
         {
             Show(content, -1);
@@ -208,8 +213,14 @@ namespace WpfAppNotify.Notify
 
         public void Show(string msg,int screenIndex)
         {
+            Show(null, msg, screenIndex);
+        }
+
+        public void Show(string title,string msg,int screenIndex)
+        {
             NotifyBox bx = new NotifyBox();
             bx.Message = msg;
+            bx.Title = title;
             bx._topFrom = GetTopFrom(screenIndex);
             _boxes.Add(bx);
             bx.Loaded += (s, e) =>
@@ -237,7 +248,12 @@ namespace WpfAppNotify.Notify
 
         public void ShowOnCurrentScr(string msg)
         {
-            Show(msg, GetScreenIndexOfMouse()); 
+            Show( null, msg, GetScreenIndexOfMouse()); 
+        }
+
+        public void ShowOnCurrentScr(string title,string msg,int screenIndex)
+        {
+            Show( title, msg, GetScreenIndexOfMouse());
         }
 
         public void ShowOnCurrentScr(DependencyObject content)
