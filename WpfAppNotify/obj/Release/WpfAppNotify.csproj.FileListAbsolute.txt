@@ -19,3 +19,4 @@ E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Release\WpfAppNotify.csproj
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Release\WpfAppNotify.csproj.CoreCompileInputs.cache
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Release\WpfAppNotify.exe
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Release\WpfAppNotify.pdb
+E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Release\WpfAppNotify.csprojAssemblyReference.cache
