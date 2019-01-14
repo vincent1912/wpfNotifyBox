@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("msgbox.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("notify/close.png")]
 
 

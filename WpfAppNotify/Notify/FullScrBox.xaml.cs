@@ -24,6 +24,16 @@ namespace WpfAppNotify.Notify
         {
             InitializeComponent();
             this.DataContext = this;
+            try
+            {
+                if (Application.Current.MainWindow != null)
+                {
+                    this.Owner = Application.Current.MainWindow;
+                }
+            }
+            catch (Exception ex)
+            {
+            } 
         }
 
         static List<FullScrBox> _boxes = new List<FullScrBox>();
@@ -39,25 +49,23 @@ namespace WpfAppNotify.Notify
         // Using a DependencyProperty as the backing store for NotifyContent.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NotifyContentProperty =
             DependencyProperty.Register("NotifyContent", typeof(object), typeof(FullScrBox), new PropertyMetadata(null));
-
-
-
-        public static void FullScrNotify(string msg)
+ 
+        /// <summary>
+        /// 在主屏幕全屏显示消息通知
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="msg"></param>
+        public static void Notify(string title, string msg)
         {
-            FullScrNotify("", msg);
+            Notify(title, msg, -1);
         }
-
-        public static void FullScrNotify(string msg, int screenIndex)
-        {
-            FullScrNotify(null, msg, screenIndex);
-        }
-
-        public static void FullScrNotify(string title, string msg)
-        {
-            FullScrNotify(title, msg, -1);
-        }
-
-        public static void FullScrNotify(string title, string msg, int screenIndex)
+        /// <summary>
+        /// 在指定屏幕全屏显示消息通知
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="msg"></param>
+        /// <param name="screenIndex"></param>
+        public static void Notify(string title, string msg, int screenIndex)
         {
             if (screenIndex < 0 || screenIndex > System.Windows.Forms.Screen.AllScreens.Length - 1)
             {
@@ -65,20 +73,25 @@ namespace WpfAppNotify.Notify
             }
             Rect rect = Helper.GetScreenBounds(screenIndex);
 
-            FullScrNotify(rect, title, msg);
+            Notify(title, msg,rect);
         }
-
-        public static void FullScrNotify(FrameworkElement relElement, string msg)
+        /// <summary>
+        /// 在指定目标上方‘全屏’显示消息通知
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="msg"></param>
+        /// <param name="placeTarget"></param>
+        public static void Notify(string title, string msg, FrameworkElement placeTarget)
         {
-            FullScrNotify(relElement, null, msg);
+            Notify( title, msg , Helper.GetElementBounds(placeTarget));
         }
-
-        public static void FullScrNotify(FrameworkElement relElement, string title, string msg)
-        {
-            FullScrNotify(Helper.GetElementBounds(relElement), title, msg);
-        }
-
-        public static void FullScrNotify(Rect bounds, string title, string msg)
+        /// <summary>
+        /// 在指定屏幕区域显示消息通知
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="msg"></param>
+        /// <param name="bounds"></param>
+        public static void Notify(string title, string msg, Rect bounds)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {

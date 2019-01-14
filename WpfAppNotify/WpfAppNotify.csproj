@@ -71,6 +71,7 @@
       <DependentUpon>FullScrBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Notify\Helper.cs" />
+    <Compile Include="Notify\NotifyArgs.cs" />
     <Compile Include="Notify\NotifyInfo.cs" />
     <Compile Include="UserControl1.xaml.cs">
       <DependentUpon>UserControl1.xaml</DependentUpon>
@@ -94,6 +95,10 @@
     <Page Include="Notify\NotifyBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControl1.xaml">
       <SubType>Designer</SubType>
@@ -135,6 +140,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="msgbox.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Notify\close.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

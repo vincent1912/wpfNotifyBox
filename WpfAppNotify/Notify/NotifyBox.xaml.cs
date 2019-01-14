@@ -15,7 +15,7 @@ namespace WpfAppNotify.Notify
     /// <summary>
     /// 显示在屏幕或指定页面右下角的消息通知
     /// </summary>
-    public partial class NotifyBox : Window , INotifyPropertyChanged
+    public partial class NotifyBox : Window 
     {
         public NotifyBox()
         {
@@ -51,25 +51,23 @@ namespace WpfAppNotify.Notify
         /// 正在显示的通知框
         /// </summary>
         static List<NotifyBox> _boxes = new List<NotifyBox>();
- 
-        #region MyRegion
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region MyRegion 
 
-        private string _message;
-         
-        public string Message
+        public string Message { get; set; }
+
+        public object MessageObj { get; set; }
+
+        void BtnClose_Click(object sender, RoutedEventArgs e)
         {
-            get { return _message; }
-            set
+            lock (_boxes)
             {
-                _message = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Message)));
+                _boxes.Remove(sender as NotifyBox);
+                this.Close();
             }
         }
 
         #endregion
-
 
         /// <summary>
         /// 计算消息框底部位置
@@ -119,7 +117,7 @@ namespace WpfAppNotify.Notify
         /// <summary>
         /// 计算指定屏幕右侧位置
         /// </summary>
-        /// <param name="screenIndex"></param>
+        /// <param name="screenIndex">屏幕序号（-1表示主屏幕）</param>
         /// <returns></returns>
         static double GetScrRight(int screenIndex)
         {
@@ -145,7 +143,7 @@ namespace WpfAppNotify.Notify
         /// <summary>
         /// 获取指定屏幕的底部位置（wpf单位）
         /// </summary>
-        /// <param name="screenIndex"></param>
+        /// <param name="screenIndex">屏幕序号（-1表示主屏幕）</param>
         /// <returns></returns>
         static double GetScrBottom(int screenIndex)
         {
@@ -268,163 +266,35 @@ namespace WpfAppNotify.Notify
             sbOut.Begin();
 
         } 
-
-        /// <summary>
-        /// 获取鼠标所在的屏幕的序号
-        /// </summary>
-        /// <returns></returns>
-        static int GetScreenIndexOfMouse()
-        {
-            var screen = System.Windows.Forms.Screen.AllScreens.ToList().Find(s => s.Bounds.Left < System.Windows.Forms.Cursor.Position.X
-                       && s.Bounds.Right >= (System.Windows.Forms.Cursor.Position.X));
-            return screen == null ? -1 : (System.Windows.Forms.Screen.AllScreens.ToList().IndexOf(screen));
-        }
          
-        /// <summary>
-        /// 显示消息提示（主屏幕右下角
-        /// </summary>
-        /// <param name="msg">消息文字</param>
-        public static void Show(string msg)
-        {
-            Show(msg, -1);
-        }
-
+        #region 文字消息
+         
         /// <summary>
         /// 显示消息提示（主屏幕右下角
         /// </summary>
         /// <param name="title">消息标题</param>
         /// <param name="msg">消息文字</param> 
-        public static void Show(string title,string msg)
+        public static void Notify(string title,string msg)
         {
-            Show(title, msg, -1);
+            Notify(title, msg, -1);
         }
-
-        /// <summary>
-        /// 显示消息提示（主屏幕右下角
-        /// </summary>
-        /// <param name="content">消息内容</param> 
-        public static void Show(DependencyObject content)
-        {
-            Show(content, -1);
-        }
-
-        /// <summary>
-        /// 显示消息提示（指定屏幕的右下角
-        /// </summary>
-        /// <param name="msg">消息文字</param>
-        /// <param name="screenIndex">屏幕序号</param> 
-        public static void Show(string msg,int screenIndex)
-        {
-            Show(null, msg, screenIndex);
-        }
-         
-        /// <summary>
-        /// 显示消息提示（鼠标指针所在屏幕的右下角
-        /// </summary>
-        /// <param name="msg">消息文字</param>
-        public static void ShowOnCurrentScr(string msg)
-        {
-            Show( null, msg, GetScreenIndexOfMouse()); 
-        }
-
         /// <summary>
         /// 显示消息提示（鼠标指针所在屏幕的右下角
         /// </summary>
         /// <param name="title">消息标题</param>
         /// <param name="msg">消息文字</param>
         /// <param name="screenIndex">屏幕序号</param>
-        public static void ShowOnCurrentScr(string title,string msg)
+        public static void NotifyOnCurrentScr(string title, string msg)
         {
-            Show( title, msg, GetScreenIndexOfMouse());
+            Notify(title, msg, Helper.GetScreenIndexOfMouse());
         }
-
-        /// <summary>
-        /// 显示消息提示（鼠标指针所在屏幕的右下角
-        /// </summary>
-        /// <param name="content">消息内容</param>
-        public static void ShowOnCurrentScr(DependencyObject content)
-        {
-            Show(content, GetScreenIndexOfMouse());
-        }
-
-        /// <summary>
-        /// 显示消息提示（指定元素的右下角
-        /// </summary>
-        /// <param name="relElement">参考元素</param>
-        /// <param name="msg">消息文字</param>
-        public static void Show(FrameworkElement relElement, string msg )
-        {
-            Show(relElement, null, msg);
-        }
-
-        /// <summary>
-        /// 显示消息提示（指定屏幕的右下角
-        /// </summary>
-        /// <param name="content">消息内容</param>
-        /// <param name="screenIndex">屏幕序号</param>  
-        public static void Show(DependencyObject content, int screenIndex)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                NotifyBox bx = new NotifyBox();
-                DependencyPropertyDescriptor.FromProperty(ActualWidthProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
-                {
-                    (sender as NotifyBox).Left = GetScrRight(screenIndex) - (sender as NotifyBox).ActualWidth;
-                });
-                DependencyPropertyDescriptor.FromProperty(ActualHeightProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
-                {
-                    (sender as NotifyBox).Top = (sender as NotifyBox)._bottom - (sender as NotifyBox).ActualHeight;
-                });
-                bx.Content = content;
-                bx._bottom = CalcBoxBottom(screenIndex);
-                var notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = true, IsText = false, ScreenIndex = screenIndex };
-                bx._notifyInfo = notifyInfo;
-                lock (_boxes)
-                {
-                    _boxes.Add(bx);
-                } 
-                bx.Loaded += (s, e) =>
-                {
-                    try
-                    { 
-                        NotifyBox self = s as NotifyBox;
-                        self.UpdateLayout();
-                        SystemSounds.Asterisk.Play();//播放提示声
-
-                        self.Top = self._bottom - self.ActualHeight;
-                        self.Left = GetScrRight(screenIndex) - self.ActualWidth;
-                        if (self.Top < 0)
-                        {
-                            self.Visibility = Visibility.Hidden;
-                        }
-                        else
-                        {
-                            FadeIn(self);
-                            Task.Factory.StartNew((box1) =>
-                            {
-                                System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_boxLife));
-                                Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    FadeOut(box1 as NotifyBox);
-                                });
-                            }, self);
-                        }
-                    }
-                    catch (Exception ex)
-                    { 
-                    }
-                };
-                bx.Show();
-            });
-        }
-
         /// <summary>
         /// 显示消息提示（指定屏幕的右下角
         /// </summary>
         /// <param name="title">消息标题</param>
         /// <param name="msg">消息文字</param>
         /// <param name="screenIndex">屏幕序号</param> 
-        public static void Show(string title, string msg, int screenIndex)
+        public static void Notify(string title, string msg, int screenIndex)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -448,7 +318,7 @@ namespace WpfAppNotify.Notify
                 }
                 bx.Loaded += (s, e) =>
                 {
-                    NotifyBox self = s as NotifyBox; 
+                    NotifyBox self = s as NotifyBox;
                     self.UpdateLayout();
                     SystemSounds.Asterisk.Play();//播放提示声
 
@@ -474,30 +344,29 @@ namespace WpfAppNotify.Notify
                 bx.Show();
             });
         }
-        
         /// <summary>
         /// 显示消息提示（指定元素的右下角
         /// </summary>
-        /// <param name="relElement">参考元素</param>
         /// <param name="title">消息标题</param>
         /// <param name="msg">消息文字</param>
-        public static void Show(FrameworkElement relElement, string title, string msg)
+        /// <param name="placeTarget">消息停靠目标（消息在该元素内部右下角显示）</param>
+        public static void Notify( string title, string msg , FrameworkElement placeTarget)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 NotifyBox bx = new NotifyBox();
                 DependencyPropertyDescriptor.FromProperty(ActualWidthProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Left = CalcElementRight(relElement) - (sender as NotifyBox).ActualWidth;
+                    (sender as NotifyBox).Left = CalcElementRight(placeTarget) - (sender as NotifyBox).ActualWidth;
                 });
                 DependencyPropertyDescriptor.FromProperty(ActualHeightProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
                     (sender as NotifyBox).Top = (sender as NotifyBox)._bottom - (sender as NotifyBox).ActualHeight;
                 });
                 bx.Message = msg;
-                bx.Title = title==null?"":title;
-                bx._bottom = CalcBoxBottom(relElement);
-                var notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = false, IsText = true,  RelElement = relElement };
+                bx.Title = title == null ? "" : title;
+                bx._bottom = CalcBoxBottom(placeTarget);
+                var notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = false, IsText = true, RelElement = placeTarget };
                 bx._notifyInfo = notifyInfo;  // 注意
                 lock (_boxes)
                 {
@@ -505,12 +374,12 @@ namespace WpfAppNotify.Notify
                 }
                 bx.Loaded += (s, e) =>
                 {
-                    NotifyBox self = s as NotifyBox; 
+                    NotifyBox self = s as NotifyBox;
                     self.UpdateLayout();
                     SystemSounds.Asterisk.Play();//播放提示声
 
                     self.Top = self._bottom - self.ActualHeight;
-                    self.Left = CalcElementRight(relElement) - self.ActualWidth;
+                    self.Left = CalcElementRight(placeTarget) - self.ActualWidth;
                     if (self.Top < 0)
                     {
                         self.Visibility = Visibility.Hidden;
@@ -526,33 +395,121 @@ namespace WpfAppNotify.Notify
                                 FadeOut(box1 as NotifyBox);
                             });
                         }, self);
-                    } 
+                    }
                 };
                 bx.Show();
             });
         }
 
+        #endregion
+
+        #region 自定义消息
+
         /// <summary>
-        /// 显示消息提示（指定元素的右下角
+        /// 显示消息提示（主屏幕的右下角
         /// </summary>
-        /// <param name="relElement">参考元素</param>
-        /// <param name="content">消息内容</param> 
-        public static void Show(FrameworkElement relElement, DependencyObject content)
+        /// <param name="content">消息内容</param>
+        /// <param name="title">消息标题</param>
+        public static void Notify(DependencyObject content, string title)
+        {
+            Notify(content, title, -1);
+        }
+
+        /// <summary>
+        /// 显示消息提示（鼠标指针所在屏幕的右下角
+        /// </summary>
+        /// <param name="content">消息内容</param>
+        /// <param name="title">消息标题</param>
+        public static void NotifyOnCurrentScr(DependencyObject content, string title)
+        {
+            Notify(content, title, Helper.GetScreenIndexOfMouse());
+        }
+
+        /// <summary>
+        /// 显示消息提示（指定屏幕的右下角
+        /// </summary>
+        /// <param name="content">消息内容</param>
+        /// <param name="title">消息标题</param>  
+        /// <param name="screenIndex">屏幕序号</param>  
+        public static void Notify(DependencyObject content, string title, int screenIndex)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 NotifyBox bx = new NotifyBox();
                 DependencyPropertyDescriptor.FromProperty(ActualWidthProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Left = CalcElementRight(relElement) - (sender as NotifyBox).ActualWidth;
+                    (sender as NotifyBox).Left = GetScrRight(screenIndex) - (sender as NotifyBox).ActualWidth;
                 });
                 DependencyPropertyDescriptor.FromProperty(ActualHeightProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
                     (sender as NotifyBox).Top = (sender as NotifyBox)._bottom - (sender as NotifyBox).ActualHeight;
                 });
-                bx.Content = content; 
-                bx._bottom = CalcBoxBottom(relElement);
-                var notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = false, IsText = false, RelElement = relElement };
+                bx.MessageObj = content;
+                bx.Title = title == null ? "" : title;
+                bx._bottom = CalcBoxBottom(screenIndex);
+                var notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = true, IsText = false, ScreenIndex = screenIndex };
+                bx._notifyInfo = notifyInfo;
+                lock (_boxes)
+                {
+                    _boxes.Add(bx);
+                }
+                bx.Loaded += (s, e) =>
+                {
+                    try
+                    {
+                        NotifyBox self = s as NotifyBox;
+                        self.UpdateLayout();
+                        SystemSounds.Asterisk.Play();//播放提示声
+
+                        self.Top = self._bottom - self.ActualHeight;
+                        self.Left = GetScrRight(screenIndex) - self.ActualWidth;
+                        if (self.Top < 0)
+                        {
+                            self.Visibility = Visibility.Hidden;
+                        }
+                        else
+                        {
+                            FadeIn(self);
+                            Task.Factory.StartNew((box1) =>
+                            {
+                                System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_boxLife));
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    FadeOut(box1 as NotifyBox);
+                                });
+                            }, self);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                };
+                bx.Show();
+            });
+        }
+        /// <summary>
+        /// 显示消息提示
+        /// </summary>
+        /// <param name="content">消息内容</param>
+        /// <param name="title">消息标题</param>
+        /// <param name="placeTarget">消息停靠目标（消息在该元素内部右下角显示）</param>
+        public static void Notify(DependencyObject content, string title , FrameworkElement placeTarget)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                NotifyBox bx = new NotifyBox();
+                DependencyPropertyDescriptor.FromProperty(ActualWidthProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
+                {
+                    (sender as NotifyBox).Left = CalcElementRight(placeTarget) - (sender as NotifyBox).ActualWidth;
+                });
+                DependencyPropertyDescriptor.FromProperty(ActualHeightProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
+                {
+                    (sender as NotifyBox).Top = (sender as NotifyBox)._bottom - (sender as NotifyBox).ActualHeight;
+                });
+                bx.MessageObj = content;
+                bx.Title = title;
+                bx._bottom = CalcBoxBottom(placeTarget);
+                var notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = false, IsText = false, RelElement = placeTarget };
                 bx._notifyInfo = notifyInfo;  // 注意
                 lock (_boxes)
                 {
@@ -560,12 +517,12 @@ namespace WpfAppNotify.Notify
                 }
                 bx.Loaded += (s, e) =>
                 {
-                    NotifyBox self = s as NotifyBox; 
+                    NotifyBox self = s as NotifyBox;
                     self.UpdateLayout();
                     SystemSounds.Asterisk.Play();//播放提示声
 
                     self.Top = self._bottom - self.ActualHeight;
-                    self.Left = CalcElementRight(relElement) - self.ActualWidth;
+                    self.Left = CalcElementRight(placeTarget) - self.ActualWidth;
                     if (self.Top < 0)
                     {
                         self.Visibility = Visibility.Hidden;
@@ -576,10 +533,16 @@ namespace WpfAppNotify.Notify
                         Task.Factory.StartNew((box1) =>
                         {
                             System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_boxLife));
-                            Application.Current.Dispatcher.Invoke(() =>
+                            lock (_boxes)
                             {
-                                FadeOut(box1 as NotifyBox);
-                            });
+                                if (_boxes.Contains(box1))
+                                {
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        FadeOut(box1 as NotifyBox);
+                                    });
+                                }
+                            }
                         }, self);
                     }
                 };
@@ -587,6 +550,131 @@ namespace WpfAppNotify.Notify
             });
         }
 
- 
+        #endregion
+
+        #region 完全自定义
+
+        public static void NotifyCustom(object content)
+        {
+            NotifyCustom(content, -1);
+        }
+        public static void NotifyCustomCurScr(object content)
+        {
+            NotifyCustom(content, Helper.GetScreenIndexOfMouse());
+        }
+        public static void NotifyCustom(object content, int screenIndex)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                NotifyBox bx = new NotifyBox();
+                DependencyPropertyDescriptor.FromProperty(ActualWidthProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
+                {
+                    (sender as NotifyBox).Left = GetScrRight(screenIndex) - (sender as NotifyBox).ActualWidth;
+                });
+                DependencyPropertyDescriptor.FromProperty(ActualHeightProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
+                {
+                    (sender as NotifyBox).Top = (sender as NotifyBox)._bottom - (sender as NotifyBox).ActualHeight;
+                });
+                bx.Content = content;
+                bx.Title = "";
+                bx._bottom = CalcBoxBottom(screenIndex);
+                var notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = true, IsText = false, ScreenIndex = screenIndex };
+                bx._notifyInfo = notifyInfo;
+                lock (_boxes)
+                {
+                    _boxes.Add(bx);
+                }
+                bx.Loaded += (s, e) =>
+                {
+                    try
+                    {
+                        NotifyBox self = s as NotifyBox;
+                        self.UpdateLayout();
+                        SystemSounds.Asterisk.Play();//播放提示声
+
+                        self.Top = self._bottom - self.ActualHeight;
+                        self.Left = GetScrRight(self._notifyInfo.ScreenIndex) - self.ActualWidth;
+                        if (self.Top < 0)
+                        {
+                            self.Visibility = Visibility.Hidden;
+                        }
+                        else
+                        {
+                            FadeIn(self);
+                            Task.Factory.StartNew((box1) =>
+                            {
+                                System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_boxLife));
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    FadeOut(box1 as NotifyBox);
+                                });
+                            }, self);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                };
+                bx.Show();
+            });
+        }
+        public static void NotifyCustom(object content, FrameworkElement placeTarget)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                NotifyBox bx = new NotifyBox();
+                DependencyPropertyDescriptor.FromProperty(ActualWidthProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
+                {
+                    (sender as NotifyBox).Left = CalcElementRight(placeTarget) - (sender as NotifyBox).ActualWidth;
+                });
+                DependencyPropertyDescriptor.FromProperty(ActualHeightProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
+                {
+                    (sender as NotifyBox).Top = (sender as NotifyBox)._bottom - (sender as NotifyBox).ActualHeight;
+                });
+                bx.Content = content;
+                bx.Title = "";
+                bx._bottom = CalcBoxBottom(placeTarget);
+                bx._notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = false, IsText = false, RelElement = placeTarget };
+                lock (_boxes)
+                {
+                    _boxes.Add(bx);
+                }
+                bx.Loaded += (s, e) =>
+                {
+                    NotifyBox self = s as NotifyBox;
+                    self.UpdateLayout();
+                    SystemSounds.Asterisk.Play();//播放提示声
+
+                    self.Top = self._bottom - self.ActualHeight;
+                    self.Left = CalcElementRight(self._notifyInfo.RelElement) - self.ActualWidth;
+                    if (self.Top < 0)
+                    {
+                        self.Visibility = Visibility.Hidden;
+                    }
+                    else
+                    {
+                        FadeIn(self);
+                        Task.Factory.StartNew((box1) =>
+                        {
+                            System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_boxLife));
+                            lock (_boxes)
+                            {
+                                if (_boxes.Contains(box1))
+                                {
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        FadeOut(box1 as NotifyBox);
+                                    });
+                                }
+                            }
+                        }, self);
+                    }
+                };
+                bx.Show();
+            });
+        }
+
+        #endregion
+         
     } 
 }

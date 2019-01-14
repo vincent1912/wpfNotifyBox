@@ -53,6 +53,17 @@ namespace WpfAppNotify.Notify
             double ratio = GetDPIRatio();
             return new Rect(scr.Bounds.X / ratio, scr.Bounds.Y / ratio, scr.Bounds.Width / ratio, scr.Bounds.Height / ratio);
         }
+
+        /// <summary>
+        /// 获取鼠标所在的屏幕的序号
+        /// </summary>
+        /// <returns></returns>
+        public static int GetScreenIndexOfMouse()
+        {
+            var screen = System.Windows.Forms.Screen.AllScreens.ToList().Find(s => s.Bounds.Left < System.Windows.Forms.Cursor.Position.X
+                       && s.Bounds.Right >= (System.Windows.Forms.Cursor.Position.X));
+            return screen == null ? -1 : (System.Windows.Forms.Screen.AllScreens.ToList().IndexOf(screen));
+        }
     }
 
 
