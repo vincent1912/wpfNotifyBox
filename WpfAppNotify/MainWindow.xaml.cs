@@ -29,9 +29,16 @@ namespace WpfAppNotify
 
         private void Window_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            Notify.NotifyBox notifyBox = new Notify.NotifyBox();
-            notifyBox.ShowOnCurrentScr(new UserControl1());
-        } 
-       
+          //  Notify.NotifyBox.ShowOnCurrentScr(new UserControl1());
+
+            Notify.NotifyBox.Show(bd, $"{DateTime.Now.ToString("HH:mm:ss.fff")} Message Notifition", "Issue titles are like email subject lines. They tell your collaborators what the issue is about at a glance. For example, the title of this issue is Getting Started with GitHub.");
+            Notify.NotifyBox.Show(this,$"{DateTime.Now.ToString("HH:mm:ss.fff")} Message Notifition", "Issue titles are like email subject lines. They tell your collaborators what the issue is about at a glance. For example, the title of this issue is Getting Started with GitHub.");
+            Notify.NotifyBox.Show($"{DateTime.Now.ToString("HH:mm:ss.fff")} Message Notifition", "Issue titles are like email subject lines. They tell your collaborators what the issue is about at a glance. For example, the title of this issue is Getting Started with GitHub.");
+        }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
     }
 }

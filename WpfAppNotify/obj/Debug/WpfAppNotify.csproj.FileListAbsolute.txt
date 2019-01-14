@@ -18,7 +18,6 @@ C:\Users\xws20\source\repos\WpfAppNotify\WpfAppNotify\obj\Debug\WpfAppNotify.pdb
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\bin\Debug\WpfAppNotify.exe.config
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\bin\Debug\WpfAppNotify.exe
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\bin\Debug\WpfAppNotify.pdb
-E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\WpfAppNotify.csprojAssemblyReference.cache
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\MainWindow.g.cs
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\Notify\NotifyBox.g.cs
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\App.g.cs
