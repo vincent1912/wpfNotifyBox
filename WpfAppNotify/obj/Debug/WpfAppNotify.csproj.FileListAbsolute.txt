@@ -36,3 +36,4 @@ E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\UserControl1.baml
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\WpfAppNotify.csprojAssemblyReference.cache
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\Notify\FullScrBox.g.cs
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\Notify\FullScrBox.baml
+E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\obj\Debug\Themes\Generic.baml

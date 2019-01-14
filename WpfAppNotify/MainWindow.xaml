@@ -8,6 +8,6 @@
         Title="MainWindow" Height="450" Width="800" MouseUp="Window_MouseUp" MouseDown="Window_MouseDown">
     <Grid>
         <Border Background="Gray"/>
-        <Border x:Name="bd" Background="Orange" Width="200" HorizontalAlignment="Left" Margin="0,0,0,100"/>
+        <Border x:Name="bd" Background="Orange" Width="400" HorizontalAlignment="Left" Margin="0,0,0,100"/>
     </Grid>
 </Window>
