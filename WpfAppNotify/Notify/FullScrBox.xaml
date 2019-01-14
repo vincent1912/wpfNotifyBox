@@ -1,0 +1,14 @@
+﻿<Window x:Class="WpfAppNotify.Notify.FullScrBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfAppNotify.Notify"
+        mc:Ignorable="d" AllowsTransparency="True" WindowStyle="None" ResizeMode="NoResize" Background="#40000000"
+        BorderThickness="0" WindowStartupLocation="Manual" Topmost="True" ShowActivated="False" ShowInTaskbar="False"
+        Title="FullScrBox">
+    <Grid>
+        <ContentControl HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding NotifyContent}" TextElement.Foreground="Orange"
+                        TextElement.FontSize="24"/>
+    </Grid>
+</Window>

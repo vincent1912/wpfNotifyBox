@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 E:\github\wpfNotifyBox\wpfNotifyBox\WpfAppNotify\App.xaml
-31225355584
+4-442441070
 
-12-1937208513
+14-1874665531
 161067989564
-MainWindow.xaml;Notify\NotifyBox.xaml;UserControl1.xaml;
+MainWindow.xaml;Notify\FullScrBox.xaml;Notify\NotifyBox.xaml;UserControl1.xaml;
 
 True
 
