@@ -31,18 +31,20 @@ namespace WpfAppNotify
         {
               Notify.NotifyBox.NotifyCustomCurScr(new UserControl1());
 
-           //Notify.NotifyBox.Notify( $"{DateTime.Now.ToString("HH:mm:ss.fff")} Message Notifition", "Issue titles are like email subject lines. " +
-           //    "They tell your collaborators what the issue is about at a glance. For example, the title of this issue is Getting Started with GitHub.",
-           //    bd);
-           //Notify.NotifyBox.Notify( $"{DateTime.Now.ToString("HH:mm:ss.fff")} Message Notifition",
-           //    "Issue titles are like email subject lines. They tell your collaborators what the issue is about at a glance. For example, the title of this issue is Getting Started with GitHub."
-           //    ,this);
-           // Notify.NotifyBox.Notify($"{DateTime.Now.ToString("HH:mm:ss.fff")} Message Notifition", "Issue titles are like email subject lines. " +
-           //     "They tell your collaborators what the issue is about at a glance. For example, the title of this issue is Getting Started with GitHub.");
-           // Notify.NotifyBox.NotifyOnCurrentScr($"{DateTime.Now.ToString("HH:mm:ss.fff")} Message Notifition", "Issue titles are like email subject lines. " +
-           // "They tell your collaborators what the issue is about at a glance. For example, the title of this issue is Getting Started with GitHub.");
+            //Notify.NotifyBox.Notify( $"{DateTime.Now.ToString("HH:mm:ss.fff")} Message Notifition", "Issue titles are like email subject lines. " +
+            //    "They tell your collaborators what the issue is about at a glance. For example, the title of this issue is Getting Started with GitHub.",
+            //    bd);
+            //Notify.NotifyBox.Notify( $"{DateTime.Now.ToString("HH:mm:ss.fff")} Message Notifition",
+            //    "Issue titles are like email subject lines. They tell your collaborators what the issue is about at a glance. For example, the title of this issue is Getting Started with GitHub."
+            //    ,this);
+            // Notify.NotifyBox.Notify($"{DateTime.Now.ToString("HH:mm:ss.fff")} Message Notifition", "Issue titles are like email subject lines. " +
+            //     "They tell your collaborators what the issue is about at a glance. For example, the title of this issue is Getting Started with GitHub.");
+            // Notify.NotifyBox.NotifyOnCurrentScr($"{DateTime.Now.ToString("HH:mm:ss.fff")} Message Notifition", "Issue titles are like email subject lines. " +
+            // "They tell your collaborators what the issue is about at a glance. For example, the title of this issue is Getting Started with GitHub.");
 
-          //  Notify.FullScrBox.Notify("lsjf", "正在登录...",1);
+            //  Notify.FullScrBox.Notify("lsjf", "正在登录...",1);
+
+            Notify.FullScrBox.Loading("alsjdflj",bd);
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
