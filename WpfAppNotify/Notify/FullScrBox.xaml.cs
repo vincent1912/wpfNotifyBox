@@ -24,6 +24,7 @@ namespace WpfAppNotify.Notify
         {
             InitializeComponent();
             this.DataContext = this;
+            this.Focusable = false;
             try
             {
                 if (Application.Current.MainWindow != null)
@@ -36,20 +37,56 @@ namespace WpfAppNotify.Notify
             } 
         }
 
+        void HostWindow_StateChanged(object sender, EventArgs e)
+        {
+            if (sender is Window win)
+            {
+                if (win.WindowState == WindowState.Minimized)
+                {
+                    this.WindowState = WindowState.Minimized;
+                }
+                else
+                {
+                    RefreshPosition();
+                }
+            }
+        }
+        void HostWindow_LocationChanged(object sender, EventArgs e)
+        {
+            RefreshPosition();
+        }
+        void HostWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            RefreshPosition();
+        }
+
         static List<FullScrBox> _boxes = new List<FullScrBox>();
 
         int _lifeMillionSeconds = 1500;
         bool _isWaitingBox = false;
+        NotifyInfo _notifyInfo = null;
+        Window _hostWindow = null;
 
         public object NotifyContent
         {
             get { return (object)GetValue(NotifyContentProperty); }
             set { SetValue(NotifyContentProperty, value); }
         }
-
-        // Using a DependencyProperty as the backing store for NotifyContent.  This enables animation, styling, binding, etc...
+         
         public static readonly DependencyProperty NotifyContentProperty =
             DependencyProperty.Register("NotifyContent", typeof(object), typeof(FullScrBox), new PropertyMetadata(null));
+
+        void RefreshPosition()
+        {
+            if (_notifyInfo.PlaceTarget != null)
+            {
+                Rect rect = Helper.GetElementBounds(_notifyInfo.PlaceTarget);
+                this.Top = rect.Y;
+                this.Left = rect.X;
+                this.Width = rect.Width;
+                this.Height = rect.Height;
+            }
+        }
  
         /// <summary>
         /// 在主屏幕全屏显示消息通知
@@ -71,31 +108,10 @@ namespace WpfAppNotify.Notify
             if (screenIndex < 0 || screenIndex > System.Windows.Forms.Screen.AllScreens.Length - 1)
             {
                 screenIndex = Helper.GetPrimaryScreenIndex();
-            }
-            Rect rect = Helper.GetScreenBounds(screenIndex);
-
-            Notify(title, msg,rect);
-        }
-        /// <summary>
-        /// 在指定目标上方‘全屏’显示消息通知
-        /// </summary>
-        /// <param name="title"></param>
-        /// <param name="msg"></param>
-        /// <param name="placeTarget"></param>
-        public static void Notify(string title, string msg, FrameworkElement placeTarget)
-        {
-            Notify( title, msg , Helper.GetElementBounds(placeTarget));
-        }
-        /// <summary>
-        /// 在指定屏幕区域显示消息通知
-        /// </summary>
-        /// <param name="title"></param>
-        /// <param name="msg"></param>
-        /// <param name="bounds"></param>
-        public static void Notify(string title, string msg, Rect bounds)
-        {
+            } 
             Application.Current.Dispatcher.Invoke(() =>
             {
+                var bounds = Helper.GetScreenBounds(screenIndex);
                 FullScrBox fullScrBox;
                 lock (_boxes)
                 {
@@ -109,7 +125,8 @@ namespace WpfAppNotify.Notify
                 fullScrBox.Left = bounds.X;
                 fullScrBox.Top = bounds.Y;
                 fullScrBox.Opacity = 0;
-                fullScrBox.Loaded += (s, e) => 
+                fullScrBox._notifyInfo = new NotifyInfo { IsScreenNotify = true, IsText = true, PlaceTarget = null, ScreenIndex = screenIndex };
+                fullScrBox.Loaded += (s, e) =>
                 {
                     DoubleAnimation aniOpacity = new DoubleAnimation();
                     aniOpacity.Duration = new Duration(TimeSpan.FromMilliseconds(600));
@@ -121,7 +138,7 @@ namespace WpfAppNotify.Notify
                 Task.Factory.StartNew(async (box) =>
                 {
                     FullScrBox fbox = box as FullScrBox;
-                    await Task.Delay( fbox._lifeMillionSeconds);
+                    await Task.Delay(fbox._lifeMillionSeconds);
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         lock (_boxes)
@@ -134,107 +151,152 @@ namespace WpfAppNotify.Notify
 
             });
         }
+        /// <summary>
+        /// 在指定目标上方‘全屏’显示消息通知
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="msg"></param>
+        /// <param name="placeTarget"></param>
+        public static void Notify(string title, string msg, FrameworkElement placeTarget)
+        { 
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var bounds = Helper.GetElementBounds(placeTarget);
+                FullScrBox fullScrBox;
+                lock (_boxes)
+                {
+                    fullScrBox = new FullScrBox();
+                    _boxes.Add(fullScrBox);
+                }
+                fullScrBox.Title = title == null ? "" : title;
+                fullScrBox.NotifyContent = msg;
+                fullScrBox.Width = bounds.Width;
+                fullScrBox.Height = bounds.Height;
+                fullScrBox.Left = bounds.X;
+                fullScrBox.Top = bounds.Y;
+                fullScrBox.Opacity = 0;
+                fullScrBox._notifyInfo = new NotifyInfo { ScreenIndex = 0, PlaceTarget = placeTarget, IsScreenNotify = false, IsText = true };
+                fullScrBox.Loaded += (s, e) =>
+                {
+                    DoubleAnimation aniOpacity = new DoubleAnimation();
+                    aniOpacity.Duration = new Duration(TimeSpan.FromMilliseconds(600));
+                    aniOpacity.To = 1;
+                    aniOpacity.EasingFunction = new QuarticEase() { EasingMode = EasingMode.EaseOut };
+                    (s as FullScrBox).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity);
+                };
+                fullScrBox.Show();
+                Task.Factory.StartNew(async (box) =>
+                {
+                    FullScrBox fbox = box as FullScrBox;
+                    await Task.Delay(fbox._lifeMillionSeconds);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        lock (_boxes)
+                        {
+                            _boxes.Remove(fbox);
+                        }
+                        fbox.Close();
+                    });
+                }, fullScrBox);
+
+            });
+        }
+ 
+        static void Loading(object msgContent,object content,FrameworkElement placeTarget,int screenIndex)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Rect bounds = placeTarget != null ? Helper.GetElementBounds(placeTarget) : Helper.GetScreenBounds(screenIndex);
+                FullScrBox fullScrBox;
+                lock (_boxes)
+                {
+                    fullScrBox = new FullScrBox();
+                    fullScrBox._isWaitingBox = true;
+                    _boxes.Add(fullScrBox);
+                } 
+                if (content != null)
+                {
+                    fullScrBox.Content = content;
+                }
+                else
+                {
+                    fullScrBox.rowIcon.Height = new GridLength(10, GridUnitType.Star);
+                    fullScrBox.rectWaitingIcon.Visibility = Visibility.Visible;
+                    fullScrBox.NotifyContent = msgContent;
+                }
+                fullScrBox.Width = bounds.Width;
+                fullScrBox.Height = bounds.Height;
+                fullScrBox.Left = bounds.X;
+                fullScrBox.Top = bounds.Y;
+                fullScrBox.Opacity = 0;
+
+                fullScrBox._notifyInfo = new NotifyInfo { IsScreenNotify = placeTarget==null, IsText = msgContent!=null, PlaceTarget = placeTarget, ScreenIndex = screenIndex };
+                if (placeTarget!= null)
+                {
+                    Window window = Window.GetWindow(placeTarget);
+                    fullScrBox._hostWindow = window;
+                    if (window != null)
+                    {
+                        window.StateChanged += fullScrBox.HostWindow_StateChanged;
+                        window.LocationChanged += fullScrBox.HostWindow_LocationChanged;
+                        window.SizeChanged += fullScrBox.HostWindow_SizeChanged;
+                    }
+                }
+                fullScrBox.Loaded += (s, e) =>
+                {
+                    DoubleAnimation aniOpacity = new DoubleAnimation();
+                    aniOpacity.Duration = new Duration(TimeSpan.FromMilliseconds(600));
+                    aniOpacity.To = 1;
+                    aniOpacity.EasingFunction = new QuarticEase() { EasingMode = EasingMode.EaseOut };
+                    (s as FullScrBox).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity);
+
+                    DoubleAnimation aniRotate = new DoubleAnimation();
+                    aniRotate.Duration = new Duration(TimeSpan.FromMilliseconds(1800));
+                    aniRotate.From = 0;
+                    aniRotate.To = 360;
+                    aniRotate.RepeatBehavior = RepeatBehavior.Forever;
+                    (s as FullScrBox).rectRotateTransform.BeginAnimation(RotateTransform.AngleProperty, aniRotate);
+                };
+                fullScrBox.Closed += (s, e) => 
+                {
+                    var fbox = s as FullScrBox;
+                    if (fbox._hostWindow != null)
+                    {
+                        fbox._hostWindow.StateChanged -= fbox.HostWindow_StateChanged;
+                        fbox._hostWindow.LocationChanged -= fbox.HostWindow_LocationChanged;
+                        fbox._hostWindow.SizeChanged -= fbox.HostWindow_SizeChanged;
+                    }
+                };
+                fullScrBox.Show();
+            });
+        } 
 
         public static void Loading(object msgContent)
         {
             Loading(msgContent, -1);
         } 
         public static void Loading(object msgContent, int screenIndex)
-        { 
-            Loading(Helper.GetScreenBounds(screenIndex), msgContent); 
+        {  
+            Loading(msgContent, null, null, screenIndex);
         }
         public static void Loading(object msgContent, FrameworkElement placeTarget)
         {
-            Loading(Helper.GetElementBounds(placeTarget), msgContent);
+            Loading(msgContent, null, placeTarget, 0);
         }
-        public static void Loading(Rect bounds,object msgContent)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            { 
-                FullScrBox fullScrBox;
-                lock (_boxes)
-                {
-                    fullScrBox = new FullScrBox();
-                    fullScrBox._isWaitingBox = true;
-                    _boxes.Add(fullScrBox);
-                }
-                fullScrBox.rowIcon.Height = new GridLength(10, GridUnitType.Star);
-                fullScrBox.rectWaitingIcon.Visibility = Visibility.Visible;
-                fullScrBox.NotifyContent = msgContent;
-                fullScrBox.Width = bounds.Width;
-                fullScrBox.Height = bounds.Height;
-                fullScrBox.Left = bounds.X;
-                fullScrBox.Top = bounds.Y;
-                fullScrBox.Opacity = 0;
-                fullScrBox.Loaded += (s, e) =>
-                {
-                    DoubleAnimation aniOpacity = new DoubleAnimation();
-                    aniOpacity.Duration = new Duration(TimeSpan.FromMilliseconds(600));
-                    aniOpacity.To = 1;
-                    aniOpacity.EasingFunction = new QuarticEase() { EasingMode = EasingMode.EaseOut };
-                    (s as FullScrBox).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity);
-
-                    DoubleAnimation aniRotate = new DoubleAnimation();
-                    aniRotate.Duration = new Duration(TimeSpan.FromMilliseconds(2400));
-                    aniRotate.From = 0;
-                    aniRotate.To = 360;
-                    aniRotate.RepeatBehavior = RepeatBehavior.Forever;
-                    (s as FullScrBox).rectRotateTransform.BeginAnimation(RotateTransform.AngleProperty, aniRotate);
-                };
-                fullScrBox.Show();
-            });
-        }
-
+ 
         public static void LoadingCustom(object content)
         {
             LoadingCustom(content, -1);
         }
         public static void LoadingCustom(object content, int screenIndex)
         {
-            LoadingCustom(Helper.GetScreenBounds(screenIndex), content);
+            Loading( null, content, null,screenIndex);
         }
         public static void LoadingCustom(object content, FrameworkElement placeTarget)
         {
-            LoadingCustom(Helper.GetElementBounds(placeTarget), content);
+            Loading(null, content,placeTarget,0);
         }
-        public static void LoadingCustom(Rect bounds, object content)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                FullScrBox fullScrBox;
-                lock (_boxes)
-                {
-                    fullScrBox = new FullScrBox();
-                    fullScrBox._isWaitingBox = true;
-                    _boxes.Add(fullScrBox);
-                }
-                fullScrBox.rowIcon.Height = new GridLength(10, GridUnitType.Star);
-                fullScrBox.rectWaitingIcon.Visibility = Visibility.Visible;
-                fullScrBox.Content = content;
-                fullScrBox.Width = bounds.Width;
-                fullScrBox.Height = bounds.Height;
-                fullScrBox.Left = bounds.X;
-                fullScrBox.Top = bounds.Y;
-                fullScrBox.Opacity = 0;
-                fullScrBox.Loaded += (s, e) =>
-                {
-                    DoubleAnimation aniOpacity = new DoubleAnimation();
-                    aniOpacity.Duration = new Duration(TimeSpan.FromMilliseconds(600));
-                    aniOpacity.To = 1;
-                    aniOpacity.EasingFunction = new QuarticEase() { EasingMode = EasingMode.EaseOut };
-                    (s as FullScrBox).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity);
-
-                    DoubleAnimation aniRotate = new DoubleAnimation();
-                    aniRotate.Duration = new Duration(TimeSpan.FromMilliseconds(2400));
-                    aniRotate.From = 0;
-                    aniRotate.To = 360;
-                    aniRotate.RepeatBehavior = RepeatBehavior.Forever;
-                    (s as FullScrBox).rectRotateTransform.BeginAnimation(RotateTransform.AngleProperty, aniRotate);
-                };
-                fullScrBox.Show();
-            });
-        }
-
+  
         public static void LoadingUpdate(object msgContent)
         {
             Application.Current.Dispatcher.Invoke(() => 
