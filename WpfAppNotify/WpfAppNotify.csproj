@@ -71,6 +71,9 @@
       <DependentUpon>FullScrBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Notify\Helper.cs" />
+    <Compile Include="Notify\MaskMessage.xaml.cs">
+      <DependentUpon>MaskMessage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Notify\NotifyArgs.cs" />
     <Compile Include="Notify\NotifyInfo.cs" />
     <Compile Include="UserControl1.xaml.cs">
@@ -89,6 +92,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Notify\FullScrBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Notify\MaskMessage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

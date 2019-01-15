@@ -251,9 +251,8 @@ namespace WpfAppNotify.Notify
                     (s as FullScrBox).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity);
 
                     DoubleAnimation aniRotate = new DoubleAnimation();
-                    aniRotate.Duration = new Duration(TimeSpan.FromMilliseconds(1800));
-                    aniRotate.From = 0;
-                    aniRotate.To = 360;
+                    aniRotate.Duration = new Duration(TimeSpan.FromMilliseconds(1800)); 
+                    aniRotate.By = 360;
                     aniRotate.RepeatBehavior = RepeatBehavior.Forever;
                     (s as FullScrBox).rectRotateTransform.BeginAnimation(RotateTransform.AngleProperty, aniRotate);
                 };
