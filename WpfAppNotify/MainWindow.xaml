@@ -4,10 +4,95 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfAppNotify"
-        mc:Ignorable="d" Background="White" 
-        Title="MainWindow" Height="450" Width="800" MouseUp="Window_MouseUp" MouseDown="Window_MouseDown">
+        mc:Ignorable="d" Background="White"
+        Title="MainWindow" Height="450" Width="800" MouseUp="Window_MouseUp" MouseDown="Window_MouseDown"  >
+    <Window.Resources>
+        <ControlTemplate x:Key="WindowTemplateKey" TargetType="{x:Type Window}">
+            <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                <Grid>
+                    <AdornerDecorator>
+                        <ContentPresenter/>
+                    </AdornerDecorator>
+                    <ResizeGrip x:Name="WindowResizeGrip" HorizontalAlignment="Right" IsTabStop="false" Visibility="Collapsed" VerticalAlignment="Bottom"/>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="ResizeMode" Value="CanResizeWithGrip"/>
+                        <Condition Property="WindowState" Value="Normal"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Visibility" TargetName="WindowResizeGrip" Value="Visible"/>
+                </MultiTrigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style x:Key="WindowStyle1" TargetType="{x:Type Window}">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+            <Setter Property="WindowChrome.WindowChrome">
+                <Setter.Value>
+                    <WindowChrome CornerRadius="0" CaptionHeight="30"
+                      GlassFrameThickness="1"
+                      UseAeroCaptionButtons="False"
+                      ResizeBorderThickness="1" 
+                      NonClientFrameEdges="None">                        
+                    </WindowChrome>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Window}">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                            <AdornerDecorator>
+                                <ContentPresenter/>
+                            </AdornerDecorator>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="ResizeMode" Value="CanResizeWithGrip">
+                    <Setter Property="Template" Value="{StaticResource WindowTemplateKey}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
-        <Border Background="Gray"/>
-        <Border x:Name="bd" Background="Orange" Width="400" HorizontalAlignment="Left" Margin="0,0,0,100"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="397*"/>
+            <ColumnDefinition Width="119*"/>
+            <ColumnDefinition Width="278*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="10,10,9.8,0">
+
+            <GroupBox Header="消息.右下角">
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="btnMsgRBElement" Click="BtnMsgRBElement_Click" Content="元素" Margin="5"/>
+                    <Button x:Name="btnMsgRBWindow" Click="BtnMsgRBWindow_Click" Content="窗体" Margin="5"/>
+                    <Button x:Name="btnMsgRBScr" Click="BtnMsgRBScr_Click" Content="屏幕" Margin="5"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="消息.中央">
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="btnMsgScrElement" Click="BtnMsgScrElement_Click" Content="元素" Margin="5"/>
+                    <Button x:Name="btnMsgScrWindow" Click="BtnMsgScrWindow_Click" Content="窗体" Margin="5"/>
+                    <Button x:Name="btnMsgScrScreen" Click="BtnMsgScrScreen_Click" Content="屏幕" Margin="5"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Loading.中央">
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="btnLoadingElement" Click="BtnLoadingElement_Click" Content="元素" Margin="5"/>
+                    <Button x:Name="btnLoadingWindow" Click="BtnLoadingWindow_Click" Content="窗体" Margin="5"/>
+                    <Button x:Name="btnLoadingScreen" Click="BtnLoadingScreen_Click" Content="屏幕" Margin="5"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+
+        <Border x:Name="bd" Grid.Row="1" Background="Orange" Margin="20,19.8,19.8,20"/>
     </Grid>
 </Window>

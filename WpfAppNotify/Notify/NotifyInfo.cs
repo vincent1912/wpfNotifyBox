@@ -11,8 +11,7 @@ namespace WpfAppNotify.Notify
     { 
         public bool IsText { get; set; }
         public int ScreenIndex { get; set; }
-        public FrameworkElement RelElement { get; set; }
-        public bool IsScreenNotify { get; set; }
-        public NotifyBox Box { get; set; }
+        public FrameworkElement PlaceTarget { get; set; }
+        public bool IsScreenNotify { get; set; } 
     }
 }

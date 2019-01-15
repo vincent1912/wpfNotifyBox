@@ -177,7 +177,7 @@ namespace WpfAppNotify.Notify
                     }
                     else
                     {
-                        box._bottom = CalcBoxBottom(box._notifyInfo.RelElement);
+                        box._bottom = CalcBoxBottom(box._notifyInfo.PlaceTarget);
                     }
                     box.Top = box._bottom - box.ActualHeight;
                     box.Visibility = Visibility.Visible;
@@ -309,9 +309,8 @@ namespace WpfAppNotify.Notify
                 });
                 bx.Message = msg;
                 bx.Title = title == null ? "" : title;
-                bx._bottom = CalcBoxBottom(screenIndex);
-                var notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = true, IsText = true, ScreenIndex = screenIndex };
-                bx._notifyInfo = notifyInfo;  // 注意
+                bx._bottom = CalcBoxBottom(screenIndex); 
+                bx._notifyInfo = new NotifyInfo { IsScreenNotify = true, IsText = true, ScreenIndex = screenIndex };
                 lock (_boxes)
                 {
                     _boxes.Add(bx);
@@ -365,9 +364,8 @@ namespace WpfAppNotify.Notify
                 });
                 bx.Message = msg;
                 bx.Title = title == null ? "" : title;
-                bx._bottom = CalcBoxBottom(placeTarget);
-                var notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = false, IsText = true, RelElement = placeTarget };
-                bx._notifyInfo = notifyInfo;  // 注意
+                bx._bottom = CalcBoxBottom(placeTarget); 
+                bx._notifyInfo = new NotifyInfo { IsScreenNotify = false, IsText = true, PlaceTarget = placeTarget };
                 lock (_boxes)
                 {
                     _boxes.Add(bx);
@@ -446,9 +444,8 @@ namespace WpfAppNotify.Notify
                 });
                 bx.MessageObj = content;
                 bx.Title = title == null ? "" : title;
-                bx._bottom = CalcBoxBottom(screenIndex);
-                var notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = true, IsText = false, ScreenIndex = screenIndex };
-                bx._notifyInfo = notifyInfo;
+                bx._bottom = CalcBoxBottom(screenIndex); 
+                bx._notifyInfo = new NotifyInfo { IsScreenNotify = true, IsText = false, ScreenIndex = screenIndex };
                 lock (_boxes)
                 {
                     _boxes.Add(bx);
@@ -508,9 +505,8 @@ namespace WpfAppNotify.Notify
                 });
                 bx.MessageObj = content;
                 bx.Title = title;
-                bx._bottom = CalcBoxBottom(placeTarget);
-                var notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = false, IsText = false, RelElement = placeTarget };
-                bx._notifyInfo = notifyInfo;  // 注意
+                bx._bottom = CalcBoxBottom(placeTarget); 
+                bx._notifyInfo = new NotifyInfo { IsScreenNotify = false, IsText = false, PlaceTarget = placeTarget };
                 lock (_boxes)
                 {
                     _boxes.Add(bx);
@@ -577,9 +573,8 @@ namespace WpfAppNotify.Notify
                 });
                 bx.Content = content;
                 bx.Title = "";
-                bx._bottom = CalcBoxBottom(screenIndex);
-                var notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = true, IsText = false, ScreenIndex = screenIndex };
-                bx._notifyInfo = notifyInfo;
+                bx._bottom = CalcBoxBottom(screenIndex); 
+                bx._notifyInfo = new NotifyInfo { IsScreenNotify = true, IsText = false, ScreenIndex = screenIndex };
                 lock (_boxes)
                 {
                     _boxes.Add(bx);
@@ -634,7 +629,7 @@ namespace WpfAppNotify.Notify
                 bx.Content = content;
                 bx.Title = "";
                 bx._bottom = CalcBoxBottom(placeTarget);
-                bx._notifyInfo = new NotifyInfo { Box = bx, IsScreenNotify = false, IsText = false, RelElement = placeTarget };
+                bx._notifyInfo = new NotifyInfo { IsScreenNotify = false, IsText = false, PlaceTarget = placeTarget };
                 lock (_boxes)
                 {
                     _boxes.Add(bx);
@@ -646,7 +641,7 @@ namespace WpfAppNotify.Notify
                     SystemSounds.Asterisk.Play();//播放提示声
 
                     self.Top = self._bottom - self.ActualHeight;
-                    self.Left = CalcElementRight(self._notifyInfo.RelElement) - self.ActualWidth;
+                    self.Left = CalcElementRight(self._notifyInfo.PlaceTarget) - self.ActualWidth;
                     if (self.Top < 0)
                     {
                         self.Visibility = Visibility.Hidden;

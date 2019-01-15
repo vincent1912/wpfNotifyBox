@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Shell;
 
 namespace WpfAppNotify.Notify
 {
@@ -13,16 +14,33 @@ namespace WpfAppNotify.Notify
         /// <summary>
         /// 获取元素在屏幕中的位置和大小
         /// </summary>
-        /// <param name="uIElement"></param>
+        /// <param name="element"></param>
         /// <returns></returns>
-        public static Rect GetElementBounds(FrameworkElement uIElement)
+        public static Rect GetElementBounds(FrameworkElement element)
         {
-            if (uIElement is Window win)
+            if (element is Window win)
             {
-                return new Rect(win.Left, win.Top, win.ActualWidth, win.ActualHeight);
+                Thickness resizeBorderThickness = new Thickness(0);
+                Thickness nonClientFrameThickness = new Thickness(0);
+                if (WindowChrome.GetWindowChrome(win) == null)
+                {
+                    if (win.WindowStyle != WindowStyle.None)
+                    {
+                        nonClientFrameThickness = SystemParameters.WindowNonClientFrameThickness;
+                    }
+                    if (win.ResizeMode != ResizeMode.NoResize)
+                    {
+                        resizeBorderThickness = SystemParameters.WindowResizeBorderThickness;
+                    }
+                }
+                return new Rect(
+                    win.Left + resizeBorderThickness.Left + nonClientFrameThickness.Left, 
+                    win.Top, 
+                    win.ActualWidth - (resizeBorderThickness.Left + resizeBorderThickness.Right + nonClientFrameThickness.Left + nonClientFrameThickness.Right), 
+                    win.ActualHeight - (resizeBorderThickness.Bottom + nonClientFrameThickness.Bottom));
             }
-            Point position = uIElement.PointToScreen(new Point(0, 0));
-            return new Rect(position.X / Helper.GetDPIRatio(), position.Y / Helper.GetDPIRatio(), uIElement.ActualWidth, uIElement.ActualHeight);
+            Point position = element.PointToScreen(new Point(0, 0));
+            return new Rect(position.X / GetDPIRatio(), position.Y / GetDPIRatio(), element.ActualWidth, element.ActualHeight);
         }
          
         /// <summary>
