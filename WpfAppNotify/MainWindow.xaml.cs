@@ -115,13 +115,18 @@ namespace WpfAppNotify
 
         private void BtnLoadingScreen_Click(object sender, RoutedEventArgs e)
         {
-            Notify.FullScrBox.Loading("loading");
+            Notify.FullScrBox.Loading("loading",1);
             Task.Run(() =>
             {
                 System.Threading.Thread.Sleep(5000);
                 Notify.FullScrBox.CloseLoading();
             });
 
+        }
+
+        private void BtnMaskElement_Click(object sender, RoutedEventArgs e)
+        {
+            Notify.MaskMessage.Loading("遮罩消息通知", bd);
         }
     }
 }
