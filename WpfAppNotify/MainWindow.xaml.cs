@@ -94,17 +94,33 @@ namespace WpfAppNotify
         private void BtnLoadingElement_Click(object sender, RoutedEventArgs e)
         {
             Notify.FullScrBox.Loading("loading", this.bd);
+
+            Task.Run(() => 
+            {
+                System.Threading.Thread.Sleep(5000);
+                Notify.FullScrBox.CloseLoading();
+            });
         }
 
         private void BtnLoadingWindow_Click(object sender, RoutedEventArgs e)
         {
             Notify.FullScrBox.Loading("loading", this);
+            Task.Run(() =>
+            {
+                System.Threading.Thread.Sleep(5000);
+                Notify.FullScrBox.CloseLoading();
+            });
 
         }
 
         private void BtnLoadingScreen_Click(object sender, RoutedEventArgs e)
         {
             Notify.FullScrBox.Loading("loading");
+            Task.Run(() =>
+            {
+                System.Threading.Thread.Sleep(5000);
+                Notify.FullScrBox.CloseLoading();
+            });
 
         }
     }
