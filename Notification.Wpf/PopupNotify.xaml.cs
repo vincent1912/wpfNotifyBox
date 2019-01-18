@@ -10,17 +10,18 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Animation;
 
-namespace WpfAppNotify.Notify
+namespace Notification.Wpf
 {
     /// <summary>
-    /// 显示在屏幕或指定页面右下角的消息通知
+    /// 显示在显示屏或指定页面右下角弹出的消息通知
     /// </summary>
-    public partial class NotifyBox : Window 
+    public partial class PopupNotify : Window 
     {
-        public NotifyBox()
+        public PopupNotify()
         {
             InitializeComponent();
             this.DataContext = this;
+            this.Focusable = false;
             try
             {
                 if (Application.Current.MainWindow != null)
@@ -50,7 +51,7 @@ namespace WpfAppNotify.Notify
         /// <summary>
         /// 正在显示的通知框
         /// </summary>
-        static List<NotifyBox> _boxes = new List<NotifyBox>();
+        static List<PopupNotify> _boxes = new List<PopupNotify>();
 
         #region MyRegion 
 
@@ -62,7 +63,7 @@ namespace WpfAppNotify.Notify
         {
             lock (_boxes)
             {
-                _boxes.Remove(sender as NotifyBox);
+                _boxes.Remove(sender as PopupNotify);
                 this.Close();
             }
         }
@@ -79,7 +80,7 @@ namespace WpfAppNotify.Notify
             lock (_boxes)
             {
                 double topFrom = GetScrBottom(screenIndex) - 4;
-                NotifyBox notifyBoxBottom = _boxes.FirstOrDefault(b => b._bottom == topFrom);
+                PopupNotify notifyBoxBottom = _boxes.FirstOrDefault(b => b._bottom == topFrom);
                 while (notifyBoxBottom != null)
                 {
                     // 注意：notifyBoxBottom超出屏幕时，visibility设置为hidden，其ActualHeight为0
@@ -102,7 +103,7 @@ namespace WpfAppNotify.Notify
             {
                 Rect rect = Helper.GetElementBounds(relElement);
                 double topFrom = rect.Bottom - 4;
-                NotifyBox notifyBoxBottom = _boxes.FirstOrDefault(b => b._bottom == topFrom);
+                PopupNotify notifyBoxBottom = _boxes.FirstOrDefault(b => b._bottom == topFrom);
                 while (notifyBoxBottom != null)
                 {
                     // 注意：notifyBoxBottom超出屏幕时，visibility设置为hidden，其ActualHeight为0
@@ -164,7 +165,7 @@ namespace WpfAppNotify.Notify
         {
             Application.Current.Dispatcher.Invoke(() => 
             {
-                NotifyBox box;
+                PopupNotify box;
                 lock (_boxes)
                 {
                     box = _boxes.FirstOrDefault(b => b.Top < 0);  // 第一个显示位置超出屏幕的通知框
@@ -187,7 +188,7 @@ namespace WpfAppNotify.Notify
                         System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_boxLife));
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            FadeOut(box1 as NotifyBox);
+                            FadeOut(box1 as PopupNotify);
                         });
                     }, box);
                 }
@@ -198,7 +199,7 @@ namespace WpfAppNotify.Notify
         /// 淡入
         /// </summary>
         /// <param name="notifyBox"></param>
-        static void FadeIn(NotifyBox notifyBox)
+        static void FadeIn(PopupNotify notifyBox)
         { 
             DoubleAnimation aniTop = new DoubleAnimation();
             aniTop.Duration = new Duration(TimeSpan.FromMilliseconds(600));
@@ -226,7 +227,7 @@ namespace WpfAppNotify.Notify
         /// 淡出
         /// </summary>
         /// <param name="notifyBox"></param>
-        static void FadeOut(NotifyBox notifyBox)
+        static void FadeOut(PopupNotify notifyBox)
         { 
             DoubleAnimation aniTop = new DoubleAnimation();
             aniTop.Duration = new Duration(TimeSpan.FromMilliseconds(600)); 
@@ -298,14 +299,14 @@ namespace WpfAppNotify.Notify
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                NotifyBox bx = new NotifyBox();
+                PopupNotify bx = new PopupNotify();
                 DependencyPropertyDescriptor.FromProperty(ActualWidthProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Left = GetScrRight(screenIndex) - (sender as NotifyBox).ActualWidth;
+                    (sender as PopupNotify).Left = GetScrRight(screenIndex) - (sender as PopupNotify).ActualWidth;
                 });
                 DependencyPropertyDescriptor.FromProperty(ActualHeightProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Top = (sender as NotifyBox)._bottom - (sender as NotifyBox).ActualHeight;
+                    (sender as PopupNotify).Top = (sender as PopupNotify)._bottom - (sender as PopupNotify).ActualHeight;
                 });
                 bx.Message = msg;
                 bx.Title = title == null ? "" : title;
@@ -317,7 +318,7 @@ namespace WpfAppNotify.Notify
                 }
                 bx.Loaded += (s, e) =>
                 {
-                    NotifyBox self = s as NotifyBox;
+                    PopupNotify self = s as PopupNotify;
                     self.UpdateLayout();
                     SystemSounds.Asterisk.Play();//播放提示声
 
@@ -335,7 +336,7 @@ namespace WpfAppNotify.Notify
                             System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_boxLife));
                             Application.Current.Dispatcher.Invoke(() =>
                             {
-                                FadeOut(box1 as NotifyBox);
+                                FadeOut(box1 as PopupNotify);
                             });
                         }, self);
                     }
@@ -353,14 +354,14 @@ namespace WpfAppNotify.Notify
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                NotifyBox bx = new NotifyBox();
+                PopupNotify bx = new PopupNotify();
                 DependencyPropertyDescriptor.FromProperty(ActualWidthProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Left = CalcElementRight(placeTarget) - (sender as NotifyBox).ActualWidth;
+                    (sender as PopupNotify).Left = CalcElementRight(placeTarget) - (sender as PopupNotify).ActualWidth;
                 });
                 DependencyPropertyDescriptor.FromProperty(ActualHeightProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Top = (sender as NotifyBox)._bottom - (sender as NotifyBox).ActualHeight;
+                    (sender as PopupNotify).Top = (sender as PopupNotify)._bottom - (sender as PopupNotify).ActualHeight;
                 });
                 bx.Message = msg;
                 bx.Title = title == null ? "" : title;
@@ -372,7 +373,7 @@ namespace WpfAppNotify.Notify
                 }
                 bx.Loaded += (s, e) =>
                 {
-                    NotifyBox self = s as NotifyBox;
+                    PopupNotify self = s as PopupNotify;
                     self.UpdateLayout();
                     SystemSounds.Asterisk.Play();//播放提示声
 
@@ -390,7 +391,7 @@ namespace WpfAppNotify.Notify
                             System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_boxLife));
                             Application.Current.Dispatcher.Invoke(() =>
                             {
-                                FadeOut(box1 as NotifyBox);
+                                FadeOut(box1 as PopupNotify);
                             });
                         }, self);
                     }
@@ -433,14 +434,14 @@ namespace WpfAppNotify.Notify
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                NotifyBox bx = new NotifyBox();
+                PopupNotify bx = new PopupNotify();
                 DependencyPropertyDescriptor.FromProperty(ActualWidthProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Left = GetScrRight(screenIndex) - (sender as NotifyBox).ActualWidth;
+                    (sender as PopupNotify).Left = GetScrRight(screenIndex) - (sender as PopupNotify).ActualWidth;
                 });
                 DependencyPropertyDescriptor.FromProperty(ActualHeightProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Top = (sender as NotifyBox)._bottom - (sender as NotifyBox).ActualHeight;
+                    (sender as PopupNotify).Top = (sender as PopupNotify)._bottom - (sender as PopupNotify).ActualHeight;
                 });
                 bx.MessageObj = content;
                 bx.Title = title == null ? "" : title;
@@ -454,7 +455,7 @@ namespace WpfAppNotify.Notify
                 {
                     try
                     {
-                        NotifyBox self = s as NotifyBox;
+                        PopupNotify self = s as PopupNotify;
                         self.UpdateLayout();
                         SystemSounds.Asterisk.Play();//播放提示声
 
@@ -472,7 +473,7 @@ namespace WpfAppNotify.Notify
                                 System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_boxLife));
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
-                                    FadeOut(box1 as NotifyBox);
+                                    FadeOut(box1 as PopupNotify);
                                 });
                             }, self);
                         }
@@ -494,14 +495,14 @@ namespace WpfAppNotify.Notify
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                NotifyBox bx = new NotifyBox();
+                PopupNotify bx = new PopupNotify();
                 DependencyPropertyDescriptor.FromProperty(ActualWidthProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Left = CalcElementRight(placeTarget) - (sender as NotifyBox).ActualWidth;
+                    (sender as PopupNotify).Left = CalcElementRight(placeTarget) - (sender as PopupNotify).ActualWidth;
                 });
                 DependencyPropertyDescriptor.FromProperty(ActualHeightProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Top = (sender as NotifyBox)._bottom - (sender as NotifyBox).ActualHeight;
+                    (sender as PopupNotify).Top = (sender as PopupNotify)._bottom - (sender as PopupNotify).ActualHeight;
                 });
                 bx.MessageObj = content;
                 bx.Title = title;
@@ -513,7 +514,7 @@ namespace WpfAppNotify.Notify
                 }
                 bx.Loaded += (s, e) =>
                 {
-                    NotifyBox self = s as NotifyBox;
+                    PopupNotify self = s as PopupNotify;
                     self.UpdateLayout();
                     SystemSounds.Asterisk.Play();//播放提示声
 
@@ -535,7 +536,7 @@ namespace WpfAppNotify.Notify
                                 {
                                     Application.Current.Dispatcher.Invoke(() =>
                                     {
-                                        FadeOut(box1 as NotifyBox);
+                                        FadeOut(box1 as PopupNotify);
                                     });
                                 }
                             }
@@ -562,14 +563,14 @@ namespace WpfAppNotify.Notify
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                NotifyBox bx = new NotifyBox();
+                PopupNotify bx = new PopupNotify();
                 DependencyPropertyDescriptor.FromProperty(ActualWidthProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Left = GetScrRight(screenIndex) - (sender as NotifyBox).ActualWidth;
+                    (sender as PopupNotify).Left = GetScrRight(screenIndex) - (sender as PopupNotify).ActualWidth;
                 });
                 DependencyPropertyDescriptor.FromProperty(ActualHeightProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Top = (sender as NotifyBox)._bottom - (sender as NotifyBox).ActualHeight;
+                    (sender as PopupNotify).Top = (sender as PopupNotify)._bottom - (sender as PopupNotify).ActualHeight;
                 });
                 bx.Content = content;
                 bx.Title = "";
@@ -583,7 +584,7 @@ namespace WpfAppNotify.Notify
                 {
                     try
                     {
-                        NotifyBox self = s as NotifyBox;
+                        PopupNotify self = s as PopupNotify;
                         self.UpdateLayout();
                         SystemSounds.Asterisk.Play();//播放提示声
 
@@ -601,7 +602,7 @@ namespace WpfAppNotify.Notify
                                 System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(_boxLife));
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
-                                    FadeOut(box1 as NotifyBox);
+                                    FadeOut(box1 as PopupNotify);
                                 });
                             }, self);
                         }
@@ -617,14 +618,14 @@ namespace WpfAppNotify.Notify
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                NotifyBox bx = new NotifyBox();
+                PopupNotify bx = new PopupNotify();
                 DependencyPropertyDescriptor.FromProperty(ActualWidthProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Left = CalcElementRight(placeTarget) - (sender as NotifyBox).ActualWidth;
+                    (sender as PopupNotify).Left = CalcElementRight(placeTarget) - (sender as PopupNotify).ActualWidth;
                 });
                 DependencyPropertyDescriptor.FromProperty(ActualHeightProperty, typeof(FrameworkElement)).AddValueChanged(bx, (sender, e) =>
                 {
-                    (sender as NotifyBox).Top = (sender as NotifyBox)._bottom - (sender as NotifyBox).ActualHeight;
+                    (sender as PopupNotify).Top = (sender as PopupNotify)._bottom - (sender as PopupNotify).ActualHeight;
                 });
                 bx.Content = content;
                 bx.Title = "";
@@ -636,7 +637,7 @@ namespace WpfAppNotify.Notify
                 }
                 bx.Loaded += (s, e) =>
                 {
-                    NotifyBox self = s as NotifyBox;
+                    PopupNotify self = s as PopupNotify;
                     self.UpdateLayout();
                     SystemSounds.Asterisk.Play();//播放提示声
 
@@ -658,7 +659,7 @@ namespace WpfAppNotify.Notify
                                 {
                                     Application.Current.Dispatcher.Invoke(() =>
                                     {
-                                        FadeOut(box1 as NotifyBox);
+                                        FadeOut(box1 as PopupNotify);
                                     });
                                 }
                             }

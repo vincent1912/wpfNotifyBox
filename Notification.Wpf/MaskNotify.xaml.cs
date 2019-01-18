@@ -15,14 +15,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace WpfAppNotify.Notify
+namespace Notification.Wpf
 {
     /// <summary>
     /// 遮罩式消息通知
     /// </summary>
-    public partial class MaskMessage : UserControl,INotifyPropertyChanged
+    public partial class MaskNotify : UserControl,INotifyPropertyChanged
     {
-        public MaskMessage()
+        public MaskNotify()
         {
             InitializeComponent();
             this.DataContext = this;
@@ -118,7 +118,7 @@ namespace WpfAppNotify.Notify
             }
         }
          
-        public static MaskMessage Notify(object msg,FrameworkElement element)
+        public static MaskNotify Notify(object msg,FrameworkElement element)
         {
             return Application.Current.Dispatcher.Invoke(() => 
             {
@@ -138,7 +138,7 @@ namespace WpfAppNotify.Notify
                 element.Margin = new Thickness();  // 注意，要设置margin为0，因为grid已替换了element
                 grid.Children.Add(element);
 
-                MaskMessage maskMessage = new MaskMessage();
+                MaskNotify maskMessage = new MaskNotify();
                 maskMessage.Opacity = 0;
                 maskMessage.NotifyContent = msg;
                 maskMessage._placeTarget = element;
@@ -151,12 +151,12 @@ namespace WpfAppNotify.Notify
                     aniOpacity.Duration = new Duration(TimeSpan.FromMilliseconds(600));
                     aniOpacity.To = 1;
                     aniOpacity.EasingFunction = new QuarticEase() { EasingMode = EasingMode.EaseOut };
-                    (s as MaskMessage).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity); 
+                    (s as MaskNotify).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity); 
                 };
                 Task.Factory.StartNew(async(box) => 
                 {
-                    await Task.Delay(MaskMessage.LifeMillionSeconds);
-                    MaskMessage mm = box as MaskMessage;
+                    await Task.Delay(MaskNotify.LifeMillionSeconds);
+                    MaskNotify mm = box as MaskNotify;
                     Application.Current.Dispatcher.Invoke(() => 
                     {
                         mm._gridPanel.Children.Clear();
@@ -172,20 +172,20 @@ namespace WpfAppNotify.Notify
         public static void Loading(object msg, FrameworkElement element)
         {
             var maskMessage = Notify(msg, element);
-            Application.Current.Dispatcher.Invoke(() => 
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 maskMessage.rectWaitingIcon.Visibility = Visibility.Visible;
                 maskMessage.rowIcon.Height = new GridLength(10, GridUnitType.Star);
                 maskMessage.Loaded += (s, e) =>
                 {
                     DoubleAnimation aniRotate = new DoubleAnimation();
-                    aniRotate.Duration = new Duration(TimeSpan.FromMilliseconds(1800)); 
+                    aniRotate.Duration = new Duration(TimeSpan.FromMilliseconds(1800));
                     aniRotate.By = 360;
                     aniRotate.RepeatBehavior = RepeatBehavior.Forever;
-                    (s as MaskMessage).rectRotateTransform.BeginAnimation(RotateTransform.AngleProperty, aniRotate);
+                    (s as MaskNotify).rectRotateTransform.BeginAnimation(RotateTransform.AngleProperty, aniRotate);
                 };
             });
-          
+
         }
     }
 }

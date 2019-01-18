@@ -1,9 +1,9 @@
-﻿<Window x:Class="WpfAppNotify.Notify.NotifyBox"
+﻿<Window x:Class="Notification.Wpf.PopupNotify"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfAppNotify.Notify"
+        xmlns:local="clr-namespace:Notification.Wpf"
         Title="Message Notifition"
         mc:Ignorable="d" d:DesignHeight="100" d:DesignWidth="360" AllowsTransparency="True" ShowActivated="False" ShowInTaskbar="False"
         Topmost="True" WindowStyle="None" ResizeMode="NoResize" MinWidth="360" MinHeight="100" MaxHeight="200" MaxWidth="400" RenderTransformOrigin="0.5,0.5"
@@ -17,7 +17,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../themes/generic.xaml"/>
+                <ResourceDictionary Source="themes/generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="TextBlock">
                 <Setter Property="TextWrapping" Value="Wrap"/>
@@ -41,6 +41,18 @@
             <!--标题-->
             <TextBlock Grid.ColumnSpan="2" HorizontalAlignment="Center" Text="{Binding Title,RelativeSource={RelativeSource AncestorType=Window}}" FontSize="14" 
                        Margin="0,4" FontWeight="Bold"/>
+            <!--icon-->
+            <Rectangle Grid.RowSpan="10" Width="28" Height="28" Fill="OrangeRed" Margin="4">
+                <Rectangle.OpacityMask>
+                    <VisualBrush >
+                        <VisualBrush.Visual>
+                            <Canvas>
+                                <Path Fill="Black" Data="M512 85.333333C277.333333 85.333333 85.333333 277.333333 85.333333 512s192 426.666667 426.666667 426.666667c234.666667 0 426.666667-192 426.666667-426.666667S746.666667 85.333333 512 85.333333zM554.666667 725.333333l-85.333333 0 0-256 85.333333 0L554.666667 725.333333zM554.666667 384l-85.333333 0L469.333333 298.666667l85.333333 0L554.666667 384z"/>
+                            </Canvas>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Rectangle.OpacityMask>
+            </Rectangle>
             <!--关闭-->
             <Button x:Name="btnClose" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{DynamicResource IconButtonStyle}"
                     Click="BtnClose_Click"/> 

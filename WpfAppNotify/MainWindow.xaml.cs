@@ -25,8 +25,7 @@ namespace WpfAppNotify
     {
         public MainWindow()
         {
-            InitializeComponent();
-            
+            InitializeComponent(); 
         }
 
         private void Window_MouseUp(object sender, MouseButtonEventArgs e)
@@ -57,76 +56,122 @@ namespace WpfAppNotify
 
         private void BtnMsgRBElement_Click(object sender, RoutedEventArgs e)
         {
-            Notify.NotifyBox.Notify("message", "message title", this.bd);
+            Notification.Wpf.PopupNotify.Notify("message", "message title", this.bd);
         }
 
         private void BtnMsgRBWindow_Click(object sender, RoutedEventArgs e)
         {
-            Notify.NotifyBox.Notify("message", "message title", this);
+            Notification.Wpf.PopupNotify.Notify("message", "message title", this);
 
         }
 
         private void BtnMsgRBScr_Click(object sender, RoutedEventArgs e)
         {
-            Notify.NotifyBox.Notify("message", "message title", -1);
+            Notification.Wpf.PopupNotify.Notify("message", "message title", -1);
 
         }
 
         private void BtnMsgScrElement_Click(object sender, RoutedEventArgs e)
         {
-            Notify.FullScrBox.Notify("message title", "message", bd);
+            Notification.Wpf.PopupMaskNotify.Notify("message title", "message", bd);
 
             double dd = bd.ActualWidth;
         }
 
         private void BtnMsgScrWindow_Click(object sender, RoutedEventArgs e)
         {
-            Notify.FullScrBox.Notify("message title", "message", this);
+            Notification.Wpf.PopupMaskNotify.Notify("message title", "message", this);
 
         }
 
         private void BtnMsgScrScreen_Click(object sender, RoutedEventArgs e)
         {
-            Notify.FullScrBox.Notify("message title", "message", -1);
+            Notification.Wpf.PopupMaskNotify.Notify("message title", "message", -1);
 
         }
 
         private void BtnLoadingElement_Click(object sender, RoutedEventArgs e)
         {
-            Notify.FullScrBox.Loading("loading", this.bd);
+            Notification.Wpf.PopupMaskNotify.Loading("loading", this.bd);
 
             Task.Run(() => 
             {
                 System.Threading.Thread.Sleep(5000);
-                Notify.FullScrBox.CloseLoading();
+                Notification.Wpf.PopupMaskNotify.CloseLoading();
             });
         }
 
         private void BtnLoadingWindow_Click(object sender, RoutedEventArgs e)
         {
-            Notify.FullScrBox.Loading("loading", this);
+            Notification.Wpf.PopupMaskNotify.Loading("loading", this);
             Task.Run(() =>
             {
                 System.Threading.Thread.Sleep(5000);
-                Notify.FullScrBox.CloseLoading();
+                Notification.Wpf.PopupMaskNotify.CloseLoading();
             });
 
         }
 
         private void BtnLoadingScreen_Click(object sender, RoutedEventArgs e)
         {
-            Notify.FullScrBox.Loading("loading",1);
+            Notification.Wpf.PopupMaskNotify.Loading("loading",1);
             Task.Run(() =>
             {
                 System.Threading.Thread.Sleep(5000);
-                Notify.FullScrBox.CloseLoading();
+                Notification.Wpf.PopupMaskNotify.CloseLoading();
             });
 
         }
 
         private void BtnMaskElement_Click(object sender, RoutedEventArgs e)
         {
-            Notify.MaskMessage.Loading("遮罩消息通知", bd);
+            Notification.Wpf.MaskNotify.Loading("遮罩消息通知", bd);
         }
+
+        Notification.Wpf.MessageBoxDisplayMode GetMessageBoxDisplayModeSelected()
+        {
+            if (rbtnNormal.IsChecked.HasValue && rbtnNormal.IsChecked.Value)
+            {
+                return Notification.Wpf.MessageBoxDisplayMode.Normal;
+            }
+            else if (rbtnScr1.IsChecked.HasValue && rbtnScr1.IsChecked.Value)
+            {
+                return Notification.Wpf.MessageBoxDisplayMode.MaskCenter;
+            }
+            else
+            {
+                return Notification.Wpf.MessageBoxDisplayMode.MaskHor;
+            }
+        }
+
+        private void BtnOK_Click(object sender, RoutedEventArgs e)
+        {
+            Notification.Wpf.MessageBox.OK("提示","OK",GetMessageBoxDisplayModeSelected());
+        }
+        private void BtnOKCancel_Click(object sender, RoutedEventArgs e)
+        {
+            Notification.Wpf.MessageBox.OKCancel("提示", "OKCancel", GetMessageBoxDisplayModeSelected());
+
+        }
+
+        private void BtnYesNo_Click(object sender, RoutedEventArgs e)
+        {
+            if( Notification.Wpf.MessageBox.YesNo("询问", "YesNo", GetMessageBoxDisplayModeSelected()) == MessageBoxResult.Yes)
+            {
+
+            }
+
+        }
+
+        private void BtnYesNoCancel_Click(object sender, RoutedEventArgs e)
+        {
+            if(Notification.Wpf.MessageBox.YesNoCancel("询问", "YesNoCancel", GetMessageBoxDisplayModeSelected()) == MessageBoxResult.Yes)
+            {
+
+            }
+
+        }
+
+
     }
 }

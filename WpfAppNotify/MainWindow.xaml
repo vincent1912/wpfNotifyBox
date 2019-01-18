@@ -2,10 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:local="clr-namespace:WpfAppNotify"
-        mc:Ignorable="d" Background="White"
-        Title="MainWindow" Height="450" Width="800" MouseUp="Window_MouseUp" MouseDown="Window_MouseDown"  >
+        
+        mc:Ignorable="d" Background="White" WindowStartupLocation="CenterScreen"
+        Title="MainWindow" Height="450" Width="1000" MouseUp="Window_MouseUp" MouseDown="Window_MouseDown"  >
     <Window.Resources>
         <ControlTemplate x:Key="WindowTemplateKey" TargetType="{x:Type Window}">
             <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
@@ -88,7 +89,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="btnLoadingElement" Click="BtnLoadingElement_Click" Content="元素" Margin="5"/>
                     <Button x:Name="btnLoadingWindow" Click="BtnLoadingWindow_Click" Content="窗体" Margin="5"/>
-                    <Button x:Name="btnLoadingScreen" Click="BtnLoadingScreen_Click" Content="屏幕" Margin="5"/>
+                    <Button x:Name="btnLoadingScreen" Click="BtnLoadingScreen_Click" Content="屏幕" Margin="5" />
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="遮罩（grid）">
@@ -96,8 +97,26 @@
                     <Button x:Name="btnMaskElement" Click="BtnMaskElement_Click" Content="元素" Margin="5"/> 
                 </StackPanel>
             </GroupBox>
+            <GroupBox Header="消息对话框">
+                <StackPanel >
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton x:Name="rbtnNormal" Content="常规"/>
+                        <RadioButton  x:Name="rbtnScr1" Content="全屏1"/>
+                        <RadioButton x:Name="rbtnScr2"  Content="全屏2" IsChecked="True"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+
+                        <Button x:Name="btnOK" Click="BtnOK_Click" Content="OK" Margin="5"/>
+                    <Button x:Name="btnOKCancel" Click="BtnOKCancel_Click" Content="OKCancel" Margin="5"/>
+                    <Button x:Name="btnYesNo" Click="BtnYesNo_Click" Content="YesNo" Margin="5"/>
+                    <Button x:Name="btnYesNoCancel" Click="BtnYesNoCancel_Click" Content="YesNoCancel" Margin="5"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
 
-        <Border x:Name="bd" Grid.Row="1" Background="DarkGray" Margin="20,19.8,19.8,20"/>
+        <Border x:Name="bd" Grid.Row="1" Background="RoyalBlue" Margin="20,19.8,19.8,20" CornerRadius="4"/>
+ 
+        
     </Grid>
 </Window>

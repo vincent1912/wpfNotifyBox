@@ -13,14 +13,14 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace WpfAppNotify.Notify
+namespace Notification.Wpf
 {
     /// <summary>
-    /// 全屏消息通知
+    /// 弹出遮罩式消息通知
     /// </summary>
-    public partial class FullScrBox : Window
+    public partial class PopupMaskNotify : Window
     {
-        public FullScrBox()
+        public PopupMaskNotify()
         {
             InitializeComponent();
             this.DataContext = this;
@@ -60,7 +60,7 @@ namespace WpfAppNotify.Notify
             RefreshPosition();
         }
 
-        static List<FullScrBox> _boxes = new List<FullScrBox>();
+        static List<PopupMaskNotify> _boxes = new List<PopupMaskNotify>();
 
         int _lifeMillionSeconds = 1500;
         bool _isWaitingBox = false;
@@ -74,7 +74,7 @@ namespace WpfAppNotify.Notify
         }
          
         public static readonly DependencyProperty NotifyContentProperty =
-            DependencyProperty.Register("NotifyContent", typeof(object), typeof(FullScrBox), new PropertyMetadata(null));
+            DependencyProperty.Register("NotifyContent", typeof(object), typeof(PopupMaskNotify), new PropertyMetadata(null));
 
         void RefreshPosition()
         {
@@ -112,10 +112,10 @@ namespace WpfAppNotify.Notify
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var bounds = Helper.GetScreenBounds(screenIndex);
-                FullScrBox fullScrBox;
+                PopupMaskNotify fullScrBox;
                 lock (_boxes)
                 {
-                    fullScrBox = new FullScrBox();
+                    fullScrBox = new PopupMaskNotify();
                     _boxes.Add(fullScrBox);
                 }
                 fullScrBox.Title = title == null ? "" : title;
@@ -132,12 +132,12 @@ namespace WpfAppNotify.Notify
                     aniOpacity.Duration = new Duration(TimeSpan.FromMilliseconds(600));
                     aniOpacity.To = 1;
                     aniOpacity.EasingFunction = new QuarticEase() { EasingMode = EasingMode.EaseOut };
-                    (s as FullScrBox).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity);
+                    (s as PopupMaskNotify).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity);
                 };
                 fullScrBox.Show();
                 Task.Factory.StartNew(async (box) =>
                 {
-                    FullScrBox fbox = box as FullScrBox;
+                    PopupMaskNotify fbox = box as PopupMaskNotify;
                     await Task.Delay(fbox._lifeMillionSeconds);
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -162,10 +162,10 @@ namespace WpfAppNotify.Notify
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var bounds = Helper.GetElementBounds(placeTarget);
-                FullScrBox fullScrBox;
+                PopupMaskNotify fullScrBox;
                 lock (_boxes)
                 {
-                    fullScrBox = new FullScrBox();
+                    fullScrBox = new PopupMaskNotify();
                     _boxes.Add(fullScrBox);
                 }
                 fullScrBox.Title = title == null ? "" : title;
@@ -182,12 +182,12 @@ namespace WpfAppNotify.Notify
                     aniOpacity.Duration = new Duration(TimeSpan.FromMilliseconds(600));
                     aniOpacity.To = 1;
                     aniOpacity.EasingFunction = new QuarticEase() { EasingMode = EasingMode.EaseOut };
-                    (s as FullScrBox).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity);
+                    (s as PopupMaskNotify).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity);
                 };
                 fullScrBox.Show();
                 Task.Factory.StartNew(async (box) =>
                 {
-                    FullScrBox fbox = box as FullScrBox;
+                    PopupMaskNotify fbox = box as PopupMaskNotify;
                     await Task.Delay(fbox._lifeMillionSeconds);
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -207,10 +207,10 @@ namespace WpfAppNotify.Notify
             Application.Current.Dispatcher.Invoke(() =>
             {
                 Rect bounds = placeTarget != null ? Helper.GetElementBounds(placeTarget) : Helper.GetScreenBounds(screenIndex);
-                FullScrBox fullScrBox;
+                PopupMaskNotify fullScrBox;
                 lock (_boxes)
                 {
-                    fullScrBox = new FullScrBox();
+                    fullScrBox = new PopupMaskNotify();
                     fullScrBox._isWaitingBox = true;
                     _boxes.Add(fullScrBox);
                 } 
@@ -248,17 +248,17 @@ namespace WpfAppNotify.Notify
                     aniOpacity.Duration = new Duration(TimeSpan.FromMilliseconds(600));
                     aniOpacity.To = 1;
                     aniOpacity.EasingFunction = new QuarticEase() { EasingMode = EasingMode.EaseOut };
-                    (s as FullScrBox).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity);
+                    (s as PopupMaskNotify).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity);
 
                     DoubleAnimation aniRotate = new DoubleAnimation();
                     aniRotate.Duration = new Duration(TimeSpan.FromMilliseconds(1800)); 
                     aniRotate.By = 360;
                     aniRotate.RepeatBehavior = RepeatBehavior.Forever;
-                    (s as FullScrBox).rectRotateTransform.BeginAnimation(RotateTransform.AngleProperty, aniRotate);
+                    (s as PopupMaskNotify).rectRotateTransform.BeginAnimation(RotateTransform.AngleProperty, aniRotate);
                 };
                 fullScrBox.Closed += (s, e) => 
                 {
-                    var fbox = s as FullScrBox;
+                    var fbox = s as PopupMaskNotify;
                     if (fbox._hostWindow != null)
                     {
                         fbox._hostWindow.StateChanged -= fbox.HostWindow_StateChanged;
