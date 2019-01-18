@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 namespace Notification.Wpf
 {
     /// <summary>
-    /// 遮罩式消息通知
+    /// 嵌入式（非window实现）遮罩消息通知
     /// </summary>
     public partial class MaskNotify : UserControl,INotifyPropertyChanged
     {

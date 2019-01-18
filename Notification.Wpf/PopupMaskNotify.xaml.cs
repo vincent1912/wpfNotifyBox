@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace Notification.Wpf
 {
     /// <summary>
-    /// 弹出遮罩式消息通知
+    /// 弹出（window实现）遮罩式消息通知
     /// </summary>
     public partial class PopupMaskNotify : Window
     {
@@ -202,9 +202,9 @@ namespace Notification.Wpf
             });
         }
  
-        static void Loading(object msgContent,object content,FrameworkElement placeTarget,int screenIndex)
+        static Window Loading(object msgContent,object content,FrameworkElement placeTarget,int screenIndex)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            return Application.Current.Dispatcher.Invoke(() =>
             {
                 Rect bounds = placeTarget != null ? Helper.GetElementBounds(placeTarget) : Helper.GetScreenBounds(screenIndex);
                 PopupMaskNotify fullScrBox;
@@ -267,20 +267,38 @@ namespace Notification.Wpf
                     }
                 };
                 fullScrBox.Show();
+                return fullScrBox;
             });
-        } 
-
-        public static void Loading(object msgContent)
-        {
-            Loading(msgContent, -1);
-        } 
-        public static void Loading(object msgContent, int screenIndex)
-        {  
-            Loading(msgContent, null, null, screenIndex);
         }
-        public static void Loading(object msgContent, FrameworkElement placeTarget)
+
+        /// <summary>
+        /// 在当前鼠标指针所在屏幕中央显示等待信息
+        /// </summary>
+        /// <param name="msgContent"></param>
+        /// <returns></returns>
+        public static Window Loading(object msgContent)
         {
-            Loading(msgContent, null, placeTarget, 0);
+            return Loading(msgContent, Helper.GetScreenIndexOfMouse());
+        }
+        /// <summary>
+        /// 在指定屏幕中央显示等待信息
+        /// </summary>
+        /// <param name="msgContent"></param>
+        /// <param name="screenIndex">屏幕序号（-1表示主屏幕）</param>
+        /// <returns></returns>
+        public static Window Loading(object msgContent, int screenIndex)
+        {  
+            return Loading(msgContent, null, null, screenIndex);
+        }
+        /// <summary>
+        /// 在指定元素中央显示等待信息
+        /// </summary>
+        /// <param name="msgContent"></param>
+        /// <param name="placeTarget">目标元素</param>
+        /// <returns></returns>
+        public static Window Loading(object msgContent, FrameworkElement placeTarget)
+        {
+            return Loading(msgContent, null, placeTarget, 0);
         }
  
         public static void LoadingCustom(object content)

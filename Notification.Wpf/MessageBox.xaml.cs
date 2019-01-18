@@ -63,9 +63,9 @@ namespace Notification.Wpf
             }
         }
 
-        public static void OK(string title, string msg,MessageBoxDisplayMode mode = MessageBoxDisplayMode.MaskHor, Window owner = null)
+        public static MessageBoxResult OK(string title, string msg,MessageBoxDisplayMode mode = MessageBoxDisplayMode.MaskHor, Window owner = null)
         {
-            Application.Current.Dispatcher.Invoke(() => 
+            return Application.Current.Dispatcher.Invoke(() => 
             {
                 MessageBox messageBox = new MessageBox();
                 messageBox.Opacity = 0;
@@ -87,12 +87,13 @@ namespace Notification.Wpf
                     (s as MessageBox).BeginAnimation(MessageBox.OpacityProperty, aniOpacity);
                 };
                 messageBox.ShowDialog();
+                return MessageBoxResult.OK;
             }); 
         }
 
-        public static void OKCancel(string title, string msg, MessageBoxDisplayMode mode = MessageBoxDisplayMode.MaskHor, Window owner = null)
+        public static MessageBoxResult OKCancel(string title, string msg, MessageBoxDisplayMode mode = MessageBoxDisplayMode.MaskHor, Window owner = null)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            return Application.Current.Dispatcher.Invoke(() =>
             {
                 MessageBox messageBox = new MessageBox();
                 messageBox.Opacity = 0;
@@ -114,6 +115,7 @@ namespace Notification.Wpf
                     (s as MessageBox).BeginAnimation(MessageBox.OpacityProperty, aniOpacity);
                 };
                 messageBox.ShowDialog();
+                return messageBox.MessageBoxResult;
             });
         }
 
