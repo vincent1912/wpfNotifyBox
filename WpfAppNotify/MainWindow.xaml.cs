@@ -125,7 +125,7 @@ namespace WpfAppNotify
 
         private void BtnMaskElement_Click(object sender, RoutedEventArgs e)
         {
-            Notification.Wpf.MaskNotify.Loading("遮罩消息通知", bd);
+            Notification.Wpf.MaskNotify.Notify("遮罩消息通知", bd);
         }
 
         Notification.Wpf.MessageBoxDisplayMode GetMessageBoxDisplayModeSelected()
@@ -172,6 +172,16 @@ namespace WpfAppNotify
 
         }
 
+        private void BtnMaskElementLoading_Click(object sender, RoutedEventArgs e)
+        {
+            btnMaskElementLoading.Tag = Notification.Wpf.MaskNotify.Loading("遮罩等待消息", bd);
 
+        }
+
+        private void BtnMaskElementCloseLoading_Click(object sender, RoutedEventArgs e)
+        {
+            Notification.Wpf.MaskNotify.CloseLoading(btnMaskElementLoading.Tag.ToString());
+
+        }
     }
 }

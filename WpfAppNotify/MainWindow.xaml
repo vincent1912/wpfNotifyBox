@@ -94,7 +94,9 @@
             </GroupBox>
             <GroupBox Header="遮罩（grid）">
                 <StackPanel Orientation="Horizontal">
-                    <Button x:Name="btnMaskElement" Click="BtnMaskElement_Click" Content="元素" Margin="5"/> 
+                    <Button x:Name="btnMaskElement" Click="BtnMaskElement_Click" Content="通知" Margin="5"/>
+                    <Button x:Name="btnMaskElementLoading" Click="BtnMaskElementLoading_Click" Content="Loading" Margin="5"/>
+                    <Button x:Name="btnMaskElementCloseLoading" Click="BtnMaskElementCloseLoading_Click" Content="Close Loading" Margin="5"/> 
                 </StackPanel>
             </GroupBox>
             <GroupBox Header="消息对话框">

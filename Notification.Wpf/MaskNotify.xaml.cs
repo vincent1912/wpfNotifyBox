@@ -32,6 +32,9 @@ namespace Notification.Wpf
         Grid _gridPanel;
         DependencyObject _parentOrigin;
         const int LifeMillionSeconds = 4000;
+        string _guid = Guid.NewGuid().ToString();
+
+        static List<MaskNotify> _loadingBoxes = new List<MaskNotify>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -117,13 +120,13 @@ namespace Notification.Wpf
                 border.Child = element2;
             }
         }
-         
-        public static MaskNotify Notify(object msg,FrameworkElement element)
+
+        static MaskNotify Notify(object msg ,FrameworkElement element,bool isLoading)
         {
-            return Application.Current.Dispatcher.Invoke(() => 
+            return Application.Current.Dispatcher.Invoke(() =>
             {
                 // 创建容器
-                Grid grid = new Grid(); 
+                Grid grid = new Grid();
                 if (element is Window win)
                 {
                     element = win.Content as FrameworkElement;
@@ -151,28 +154,40 @@ namespace Notification.Wpf
                     aniOpacity.Duration = new Duration(TimeSpan.FromMilliseconds(600));
                     aniOpacity.To = 1;
                     aniOpacity.EasingFunction = new QuarticEase() { EasingMode = EasingMode.EaseOut };
-                    (s as MaskNotify).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity); 
+                    (s as MaskNotify).BeginAnimation(FrameworkElement.OpacityProperty, aniOpacity);
                 };
-                Task.Factory.StartNew(async(box) => 
+                if (!isLoading)
                 {
-                    await Task.Delay(MaskNotify.LifeMillionSeconds);
-                    MaskNotify mm = box as MaskNotify;
-                    Application.Current.Dispatcher.Invoke(() => 
+                    Task.Factory.StartNew(async (box) =>
                     {
-                        mm._gridPanel.Children.Clear();
-                        Switch(mm._gridPanel, mm._placeTarget);
-                    }); 
-                }, maskMessage);
-
+                        await Task.Delay(MaskNotify.LifeMillionSeconds);
+                        MaskNotify mm = box as MaskNotify;
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            mm._gridPanel.Children.Clear();
+                            Switch(mm._gridPanel, mm._placeTarget);
+                        });
+                    }, maskMessage);
+                }
                 return maskMessage;
             });
         }
-
-
-        public static void Loading(object msg, FrameworkElement element)
+         
+        public static MaskNotify Notify(object msg,FrameworkElement element)
         {
-            var maskMessage = Notify(msg, element);
-            Application.Current.Dispatcher.Invoke(() =>
+            return Notify(msg, element, false);
+        }
+        
+        /// <summary>
+        /// 显示等待消息
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="element"></param>
+        /// <returns>等待id</returns>
+        public static string Loading(object msg, FrameworkElement element)
+        {
+            var maskMessage = Notify(msg, element,true);
+            return Application.Current.Dispatcher.Invoke(() =>
             {
                 maskMessage.rectWaitingIcon.Visibility = Visibility.Visible;
                 maskMessage.rowIcon.Height = new GridLength(10, GridUnitType.Star);
@@ -184,8 +199,25 @@ namespace Notification.Wpf
                     aniRotate.RepeatBehavior = RepeatBehavior.Forever;
                     (s as MaskNotify).rectRotateTransform.BeginAnimation(RotateTransform.AngleProperty, aniRotate);
                 };
+                _loadingBoxes.Add(maskMessage);
+                return maskMessage._guid;
             });
-
+        }
+        /// <summary>
+        /// 关闭等待
+        /// </summary>
+        /// <param name="id">等待id</param>
+        public static void CloseLoading(string id)
+        {
+            Application.Current.Dispatcher.Invoke(() => 
+            {
+                var box = _loadingBoxes.FirstOrDefault(b => b._guid == id);
+                if (box != null)
+                {
+                    box._gridPanel.Children.Clear();
+                    Switch(box._gridPanel, box._placeTarget);
+                }
+            });
         }
     }
 }
