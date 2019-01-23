@@ -8,55 +8,7 @@
         mc:Ignorable="d" Background="White" WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="450" Width="1000" MouseUp="Window_MouseUp" MouseDown="Window_MouseDown"  >
     <Window.Resources>
-        <ControlTemplate x:Key="WindowTemplateKey" TargetType="{x:Type Window}">
-            <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
-                <Grid>
-                    <AdornerDecorator>
-                        <ContentPresenter/>
-                    </AdornerDecorator>
-                    <ResizeGrip x:Name="WindowResizeGrip" HorizontalAlignment="Right" IsTabStop="false" Visibility="Collapsed" VerticalAlignment="Bottom"/>
-                </Grid>
-            </Border>
-            <ControlTemplate.Triggers>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="ResizeMode" Value="CanResizeWithGrip"/>
-                        <Condition Property="WindowState" Value="Normal"/>
-                    </MultiTrigger.Conditions>
-                    <Setter Property="Visibility" TargetName="WindowResizeGrip" Value="Visible"/>
-                </MultiTrigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <Style x:Key="WindowStyle1" TargetType="{x:Type Window}">
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
-            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
-            <Setter Property="WindowChrome.WindowChrome">
-                <Setter.Value>
-                    <WindowChrome CornerRadius="0" CaptionHeight="30"
-                      GlassFrameThickness="1"
-                      UseAeroCaptionButtons="False"
-                      ResizeBorderThickness="1" 
-                      NonClientFrameEdges="None">                        
-                    </WindowChrome>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Window}">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
-                            <AdornerDecorator>
-                                <ContentPresenter/>
-                            </AdornerDecorator>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="ResizeMode" Value="CanResizeWithGrip">
-                    <Setter Property="Template" Value="{StaticResource WindowTemplateKey}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+     
     </Window.Resources>
     
     <Grid>
