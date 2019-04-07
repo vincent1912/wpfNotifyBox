@@ -76,6 +76,11 @@ namespace Notification.Wpf
         public static readonly DependencyProperty NotifyContentProperty =
             DependencyProperty.Register("NotifyContent", typeof(object), typeof(PopupMaskNotify), new PropertyMetadata(null));
 
+        /// <summary>
+        /// 唯一id
+        /// </summary>
+        public string Id { get; private set; } = Guid.NewGuid().ToString();
+
         void RefreshPosition()
         {
             if (_notifyInfo.PlaceTarget != null)
@@ -202,7 +207,7 @@ namespace Notification.Wpf
             });
         }
  
-        static Window Loading(object msgContent,object content,FrameworkElement placeTarget,int screenIndex)
+        static string Loading(object msgContent,object content,FrameworkElement placeTarget,int screenIndex)
         {
             return Application.Current.Dispatcher.Invoke(() =>
             {
@@ -267,7 +272,7 @@ namespace Notification.Wpf
                     }
                 };
                 fullScrBox.Show();
-                return fullScrBox;
+                return fullScrBox.Id;
             });
         }
 
@@ -276,44 +281,66 @@ namespace Notification.Wpf
         /// </summary>
         /// <param name="msgContent"></param>
         /// <returns></returns>
-        public static Window Loading(object msgContent)
+        public static string Loading(object msgContent)
         {
             return Loading(msgContent, Helper.GetScreenIndexOfMouse());
         }
+
         /// <summary>
         /// 在指定屏幕中央显示等待信息
         /// </summary>
         /// <param name="msgContent"></param>
         /// <param name="screenIndex">屏幕序号（-1表示主屏幕）</param>
-        /// <returns></returns>
-        public static Window Loading(object msgContent, int screenIndex)
+        /// <returns>等待id</returns>
+        public static string Loading(object msgContent, int screenIndex)
         {  
             return Loading(msgContent, null, null, screenIndex);
         }
+
         /// <summary>
         /// 在指定元素中央显示等待信息
         /// </summary>
         /// <param name="msgContent"></param>
         /// <param name="placeTarget">目标元素</param>
-        /// <returns></returns>
-        public static Window Loading(object msgContent, FrameworkElement placeTarget)
+        /// <returns>等待id</returns>
+        public static string Loading(object msgContent, FrameworkElement placeTarget)
         {
             return Loading(msgContent, null, placeTarget, 0);
         }
  
-        public static void LoadingCustom(object content)
+        /// <summary>
+        /// 自定义等待
+        /// </summary>
+        /// <param name="content"></param>
+        public static string LoadingCustom(object content)
         {
-            LoadingCustom(content, -1);
+            return LoadingCustom(content, -1);
         }
-        public static void LoadingCustom(object content, int screenIndex)
+
+        /// <summary>
+        /// 自定义等待
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="screenIndex"></param>
+        public static string LoadingCustom(object content, int screenIndex)
         {
-            Loading( null, content, null,screenIndex);
+            return Loading( null, content, null,screenIndex);
         }
-        public static void LoadingCustom(object content, FrameworkElement placeTarget)
+
+        /// <summary>
+        /// 自定义等待
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="placeTarget"></param>
+        public static string LoadingCustom(object content, FrameworkElement placeTarget)
         {
-            Loading(null, content,placeTarget,0);
+            return Loading(null, content,placeTarget,0);
         }
   
+        /// <summary>
+        /// 更新等待
+        /// </summary>
+        /// <param name="msgContent"></param>
         public static void LoadingUpdate(object msgContent)
         {
             Application.Current.Dispatcher.Invoke(() => 
@@ -329,13 +356,36 @@ namespace Notification.Wpf
             });
         }
 
-        public static void CloseLoading()
+        /// <summary>
+        /// 关闭所有等待
+        /// </summary>
+        public static void CloseAllLoading()
         {
             Application.Current.Dispatcher.Invoke(() => 
             {
                 lock (_boxes)
                 {
                     var boxes = _boxes.FindAll(b => b._isWaitingBox);
+                    foreach (var item in boxes)
+                    {
+                        item.Close();
+                        _boxes.Remove(item);
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// 关闭等待
+        /// </summary>
+        /// <param name="id">等待id</param>
+        public static void CloseLoading(string id)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                lock (_boxes)
+                {
+                    var boxes = _boxes.FindAll(b => b._isWaitingBox && b.Id == id);
                     foreach (var item in boxes)
                     {
                         item.Close();

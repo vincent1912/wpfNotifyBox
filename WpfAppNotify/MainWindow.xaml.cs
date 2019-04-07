@@ -97,7 +97,7 @@ namespace WpfAppNotify
             Task.Run(() => 
             {
                 System.Threading.Thread.Sleep(5000);
-                Notification.Wpf.PopupMaskNotify.CloseLoading();
+                Notification.Wpf.PopupMaskNotify.CloseAllLoading();
             });
         }
 
@@ -107,7 +107,7 @@ namespace WpfAppNotify
             Task.Run(() =>
             {
                 System.Threading.Thread.Sleep(5000);
-                Notification.Wpf.PopupMaskNotify.CloseLoading();
+                Notification.Wpf.PopupMaskNotify.CloseAllLoading();
             });
 
         }
@@ -118,7 +118,7 @@ namespace WpfAppNotify
             Task.Run(() =>
             {
                 System.Threading.Thread.Sleep(5000);
-                Notification.Wpf.PopupMaskNotify.CloseLoading();
+                Notification.Wpf.PopupMaskNotify.CloseAllLoading();
             });
 
         }
